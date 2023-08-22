@@ -5,4 +5,6 @@
     #232323
 
     <color name="background_nav">#232323</color>
+
+    <color name="custom_hint_color">#8F8F8F</color>
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TransparentAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColorHint">
+            #8F8F8F</item> <!-- Change this color to your desired hint color -->
+        <item name="android:textColor">@android:color/white</item> <!-- Change to white for user input text color -->
+    </style>
+
+
+
+</resources>

@@ -5,10 +5,14 @@ plugins {
 }
 buildscript {
     repositories {
-
+        maven { url = uri("https://www.jitpack.io" ) }
         google()
+        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath ("com.android.tools.build:gradle:4.3.0")
+        classpath ("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
     }
 }
+
