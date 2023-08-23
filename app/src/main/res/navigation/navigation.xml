@@ -21,7 +21,14 @@
         android:id="@+id/menuFragment"
         android:name="com.xilli.stealthnet.ui.menu.MenuFragment"
         android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu" />
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_serverListFragment"
+            app:destination="@id/serverListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/rateScreenFragment"
         android:name="com.xilli.stealthnet.ui.RateScreenFragment"
@@ -51,4 +58,9 @@
         android:name="com.xilli.stealthnet.ui.ServerListFragment"
         android:label="ServerListFragment"
         tools:layout="@layout/fragment_server_list"/>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.xilli.stealthnet.ui.menu.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>

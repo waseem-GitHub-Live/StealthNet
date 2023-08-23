@@ -8,11 +8,14 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayoutmenu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#88000000"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onBackgroundClick"
         tools:context=".ui.menu.MenuFragment">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -25,6 +28,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
+                android:layout_marginTop="30dp"
                 android:layout_height="0dp"
                 android:background="#232323"
                 app:layout_constraintEnd_toEndOf="parent"

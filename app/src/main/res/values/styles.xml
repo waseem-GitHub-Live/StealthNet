@@ -4,10 +4,14 @@
     <style name="TransparentAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="android:textColorHint">
-            #8F8F8F</item> <!-- Change this color to your desired hint color -->
-        <item name="android:textColor">@android:color/white</item> <!-- Change to white for user input text color -->
+    <style name="SearchViewStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/custom_hint_color</item>
+    </style>
+
+    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/selected</item> <!-- For selected state -->
+        <item name="android:checkedButton">@drawable/unselected</item> <!-- For unselected state -->
     </style>
 
 

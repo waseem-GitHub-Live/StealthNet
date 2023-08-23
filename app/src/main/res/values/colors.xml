@@ -7,4 +7,8 @@
     <color name="background_nav">#232323</color>
 
     <color name="custom_hint_color">#8F8F8F</color>
+
+    <color name="selected">#5FF053</color>
+    <color name="unselected">#8F8F8F</color>
+
 </resources>
