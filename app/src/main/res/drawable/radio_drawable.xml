@@ -5,9 +5,9 @@
         android:drawable="@drawable/selected"
         >
     </item>
-    <item
-        android:state_checked="false"
-        android:drawable="@drawable/unselected"
-        >
-    </item>
+<!--    <item-->
+<!--        android:state_checked="false"-->
+<!--        android:drawable="@drawable/unselected"-->
+<!--        >-->
+<!--    </item>-->
 </selector>

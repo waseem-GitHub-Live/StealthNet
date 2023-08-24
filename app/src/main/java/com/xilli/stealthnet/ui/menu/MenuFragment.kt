@@ -41,6 +41,10 @@ class MenuFragment : Fragment() {
             val action = MenuFragmentDirections.actionMenuFragmentToServerListFragment()
             findNavController().navigate(action)
         }
+        binding?.SplitTunning?.setOnClickListener {
+            val action = MenuFragmentDirections.actionMenuFragmentToSplitTunningFragment()
+            findNavController().navigate(action)
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()

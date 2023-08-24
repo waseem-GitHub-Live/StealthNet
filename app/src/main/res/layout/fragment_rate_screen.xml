@@ -18,9 +18,8 @@
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.09"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -63,13 +62,14 @@
             app:layout_constraintHeight_percent="0.2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintWidth_percent="0.88">
+            app:layout_constraintWidth_percent="0.93">
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
+                android:fontFamily="@font/urbanist_semibold_600"
                 android:text="Connection wil end soon!"
                 android:textColor="#FFFFFF"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
+                android:fontFamily="@font/urbanist_bold_700"
                 android:text="00:27:31"
                 android:textColor="#5FF053"
                 android:textSize="20sp"
@@ -101,7 +102,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:textColor="#1E1E1E"
                     android:text="+ 2 Hrs"
+                    android:textSize="19sp"
+                    android:fontFamily="@font/urbanist_extrabold_800"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -126,13 +130,13 @@
             android:id="@+id/constraintLayout2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/background_black_card"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
-            app:layout_constraintWidth_percent="0.88">
+            app:layout_constraintWidth_percent="0.93">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -149,6 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="13dp"
+                android:fontFamily="@font/urbanist_bold_700"
                 android:text="@string/neatherland"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -161,6 +166,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="51 . 178 . 82 . 56"
+                android:fontFamily="@font/urbanist_medium_500"
                 android:textColor="#8F8F8F"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/flag_name" />
@@ -203,7 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Downloads"
-
+                android:fontFamily="@font/urbanist_regular_400"
                 android:textColor="#8F8F8F"
                 app:layout_constraintEnd_toStartOf="@+id/view"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
@@ -214,6 +220,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1.0 MB/s"
+                android:fontFamily="@font/urbanist_semibold_600"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -225,11 +232,12 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:foregroundGravity="center"
+                android:background="@color/background_nav"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/imageView3"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.0" />
+                app:layout_constraintWidth_percent="0.01" />
 
             <ImageView
                 android:id="@+id/upload"
@@ -247,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:text="Uploads"
                 android:textColor="#8F8F8F"
-
+                android:fontFamily="@font/urbanist_regular_400"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/upload"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -258,6 +266,7 @@
                 android:layout_height="wrap_content"
                 android:text="1.0 MB/s"
                 android:textColor="#FFFFFF"
+                android:fontFamily="@font/urbanist_semibold_600"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/upload"
@@ -266,20 +275,21 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.2"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
-            app:layout_constraintWidth_percent="0.6" >
+             >
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rate us!"
+                android:fontFamily="@font/urbanist_semibold_600"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -288,11 +298,15 @@
 
             <TextView
                 android:id="@+id/textView6"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                app:layout_constraintWidth_percent="0.99"
+                android:maxLines="1"
+                android:gravity="center"
                 android:text="Please rate your experience here"
                 android:textColor="#8F8F8F"
+                android:fontFamily="@font/urbanist_regular_400"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

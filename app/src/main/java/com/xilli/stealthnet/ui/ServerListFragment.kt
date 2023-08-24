@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,8 @@ class ServerListFragment : Fragment() {
     private lateinit var adapterFREE: SearchView_Free_Adapter
     private var mList1 = ArrayList<DataItemPremium>()
     private var mList2 = ArrayList<DataItemFree>()
+    private var isBackgroundChanged = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +65,20 @@ class ServerListFragment : Fragment() {
         binding?.imageView7?.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding?.constraintLayout2?.setOnClickListener {
+            isBackgroundChanged = !isBackgroundChanged
+            updateBackgroundState()
+        }
     }
+    private fun updateBackgroundState() {
+        if (isBackgroundChanged) {
+            binding?.constraintLayout2?.setBackgroundResource(R.drawable.selector_background)
+        } else {
+            binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
+        }
+    }
+
+
     private fun addDataToList() {
         mList1.add(DataItemPremium("Neatherland", "22.22.22.22", R.drawable.flag, R.drawable.ic_signal, R.drawable.ic_green_crown))
         mList1.add(DataItemPremium("SriLanka", "22.22.22.22", R.drawable.flag, R.drawable.ic_signal, R.drawable.ic_green_crown))

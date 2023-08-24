@@ -28,6 +28,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="smart_location">Smart Location</string>
-    <string name="connect">connect</string>
+    <string name="connect">Connect</string>
     <string name="neatherland">Neatherland</string>
+    <string name="disconnect_timer_initial">Disconnect</string>
+    <string name="details_splittunning">All apps run through encrypted VPN connection. If you\nwant to exclude any app, tap the button on the right.</string>
+
+
 </resources>

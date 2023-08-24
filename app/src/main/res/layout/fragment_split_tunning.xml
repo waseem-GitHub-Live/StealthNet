@@ -11,20 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#141414"
-        tools:context=".ui.menu.SettingFragment">
+        tools:context=".ui.menu.SplitTunningFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout14"
+            android:id="@+id/splittunning"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.09"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/backfromsettings"
+                android:id="@+id/backfromSplit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
@@ -36,30 +35,56 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="Split tunneling "
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/backfromsettings"
+                app:layout_constraintStart_toEndOf="@+id/backfromSplit"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/urbanist_regular_400"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@string/details_splittunning"
+            android:textColor="#808080"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/splittunning" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/background_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.001"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView14"
+            app:layout_constraintWidth_percent="0.91" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/language"
+            android:id="@+id/chrome"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout14">
+            app:layout_constraintTop_toBottomOf="@+id/view2">
 
             <ImageView
-                android:id="@+id/imageView8"
+                android:id="@+id/imageView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:src="@drawable/ic_world"
+                android:layout_margin="30dp"
+                android:src="@drawable/ic_chrome"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -67,31 +92,42 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Language"
+                android:layout_margin="18dp"
+                android:fontFamily="@font/urbanist_semibold_600"
+                android:text="Chrome"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView8"
+                app:layout_constraintStart_toEndOf="@+id/imageView9"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/view3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/background_nav"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.01"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.91" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/autoconnect"
+            android:id="@+id/constraintLayout15"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/language">
+            app:layout_constraintTop_toBottomOf="@+id/chrome">
 
             <ImageView
-                android:id="@+id/imageView99"
+                android:id="@+id/imageViewyoutube"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:src="@drawable/ic_auto_connect"
+                android:layout_margin="30dp"
+                android:src="@drawable/ic_youtube"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -99,83 +135,42 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Auto connect"
+                android:layout_margin="18dp"
+                android:fontFamily="@font/urbanist_semibold_600"
+                android:text="Youtube"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView99"
+                app:layout_constraintStart_toEndOf="@+id/imageViewyoutube"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/killswitch"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/autoconnect">
-
-            <ImageView
-                android:id="@+id/kill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:src="@drawable/ic_kill_switch"
+            <View
+                android:id="@+id/view4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/background_nav"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.01"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kill Switch"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@id/description"
-                app:layout_constraintStart_toEndOf="@+id/kill"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:text="Block internet when connecting or\nhanging serves"
-                android:textColor="#8F8F8F"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/kill"
-                app:layout_constraintTop_toBottomOf="@+id/textView13" />
-
-            <!--        <Switch-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:padding="30dp"-->
-            <!--            android:thumb="@drawable/switch_background"-->
-            <!--            android:track="@drawable/track_switch"-->
-            <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--            app:layout_constraintEnd_toEndOf="parent"-->
-            <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
+                app:layout_constraintWidth_percent="0.91" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/connection"
+            android:id="@+id/constraintLayout16"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/killswitch">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout15">
 
             <ImageView
-                android:id="@+id/connection1"
+                android:id="@+id/imageViewfacebook"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:src="@drawable/ic_signal_connection"
+                android:layout_margin="30dp"
+                android:src="@drawable/ic_facebook"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -183,30 +178,41 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Improve connection stability"
+                android:layout_margin="18dp"
+                android:fontFamily="@font/urbanist_semibold_600"
+                android:text="Facebook"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/connection1"
+                app:layout_constraintStart_toEndOf="@+id/imageViewfacebook"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/view5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/background_nav"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.01"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.91" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/save"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/connection">
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout16">
 
             <ImageView
-                android:id="@+id/save1"
+                android:id="@+id/imageViewwhattsapp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:src="@drawable/ic_server"
+                android:layout_margin="30dp"
+                android:src="@drawable/ic_whatsapp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -214,12 +220,25 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save last selected server"
+                android:layout_margin="18dp"
+                android:fontFamily="@font/urbanist_semibold_600"
+                android:text="Whatsapp"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/save1"
+                app:layout_constraintStart_toEndOf="@+id/imageViewwhattsapp"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/view6"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/background_nav"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.01"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.91" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

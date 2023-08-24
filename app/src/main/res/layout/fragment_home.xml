@@ -27,9 +27,9 @@
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.09"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -69,10 +69,10 @@
             android:layout_marginTop="40dp"
             android:background="@drawable/background_black_card"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintWidth_percent="0.88">
+            app:layout_constraintWidth_percent="0.93">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -91,7 +91,8 @@
                 android:text="@string/smart_location"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                android:paddingTop="13dp"
+                android:paddingTop="19dp"
+                android:fontFamily="@font/urbanist_bold_700"
                 app:layout_constraintBottom_toTopOf="@+id/fastest"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -100,7 +101,9 @@
                 android:id="@+id/fastest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:text="Fastest Server"
+                android:fontFamily="@font/urbanist_medium_500"
                 android:textColor="#8F8F8F"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/flag_name" />
@@ -121,18 +124,30 @@
             android:id="@+id/connctlayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.4"
+            app:layout_constraintHeight_percent="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-            app:layout_constraintWidth_percent="0.7">
+            app:layout_constraintWidth_percent="0.86">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAnimationView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.4"
+                app:lottie_rawRes="@raw/backview" />
 
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/background_connected"
+                android:src="@drawable/ic_background_white_circle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,20 +168,24 @@
                 android:id="@+id/lottieAnimationView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:visibility="gone"
                 android:layout_marginBottom="34dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.4"
+                app:layout_constraintHeight_percent="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.4"
+                app:layout_constraintWidth_percent="0.5"
                 app:lottie_rawRes="@raw/loading_animation" />
+
+
             <TextView
                 android:id="@+id/connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
+                android:textSize="17sp"
+                android:fontFamily="@font/urbanist_medium_500"
                 android:text="@string/connect"
                 app:layout_constraintEnd_toEndOf="@+id/power"
                 app:layout_constraintStart_toStartOf="@+id/power"

@@ -42,30 +42,52 @@ class HomeFragment : Fragment() {
     }
 
     private fun backgroundView() {
-        requireActivity().window.decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                )
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Set the layout flags to enable immersive mode with transparent status bar
-            requireActivity().window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-
-            // Set the status bar background color to transparent
-            requireActivity().window.statusBarColor = Color.TRANSPARENT
-        }
+//        requireActivity().window.decorView.systemUiVisibility = (
+//                View.SYSTEM_UI_FLAG_FULLSCREEN or
+//                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                )
+//        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            // Set the layout flags to enable immersive mode with transparent status bar
+//            requireActivity().window.decorView.systemUiVisibility =
+//                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//
+//            // Set the status bar background color to transparent
+//            requireActivity().window.statusBarColor = Color.TRANSPARENT
+//        }
     }
     private fun loadLottieAnimation() {
         val animationView = view?.findViewById<LottieAnimationView>(R.id.lottieAnimationView)
         animationView?.setAnimation(R.raw.loading_animation)
-
+        val animationView2 = view?.findViewById<LottieAnimationView>(R.id.lottieAnimationView2)
+        animationView2?.setAnimation(R.raw.backview)
         animationView?.addAnimatorUpdateListener {
             Log.d("LottieDebug", "Animation progress: ${animationView.progress}")
         }
+        animationView2?.addAnimatorUpdateListener {
+            if (animationView != null) {
+                Log.d("LottieDebug", "Animation progress: ${animationView.progress}")
+            }
+        }
+        animationView2?.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
 
+            }
+
+            override fun onAnimationEnd(p0: Animator) {
+
+            }
+
+            override fun onAnimationCancel(p0: Animator) {
+
+            }
+
+            override fun onAnimationRepeat(p0: Animator) {
+
+            }
+        })
         animationView?.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator) {
 
@@ -85,6 +107,7 @@ class HomeFragment : Fragment() {
         })
 
         animationView?.playAnimation()
+        animationView2?.playAnimation()
     }
 
     private fun clicklistner() {
@@ -92,19 +115,22 @@ class HomeFragment : Fragment() {
             val action = HomeFragmentDirections.actionHomeFragmentToMenuFragment()
                 findNavController().navigate(action)
         }
-        binding?.connctlayout?.setOnClickListener {
+        binding?.imageView4?.setOnClickListener {
             loadLottieAnimation()
             binding?.power?.visibility = View.GONE
             binding?.lottieAnimationView?.visibility = View.VISIBLE
+            binding?.lottieAnimationView2?.visibility =View.VISIBLE
             binding?.lottieAnimationView?.playAnimation()
+            binding?.lottieAnimationView2?.playAnimation()
             binding?.connect?.text = "Connecting"
             Handler().postDelayed({
-                binding?.connect?.text = "Connect"
-                binding?.power?.visibility = View.VISIBLE
-                binding?.lottieAnimationView?.visibility = View.GONE
                 val action = HomeFragmentDirections.actionHomeFragmentToRateScreenFragment()
                 findNavController().navigate(action)
             }, 3000)
+        }
+        binding?.constraintLayout2?.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeFragmentToServerListFragment()
+            findNavController().navigate(action)
         }
     }
 

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_rateScreenFragment"
             app:destination="@id/rateScreenFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_serverListFragment"
+            app:destination="@id/serverListFragment" />
     </fragment>
     <fragment
         android:id="@+id/menuFragment"
@@ -28,6 +31,9 @@
         <action
             android:id="@+id/action_menuFragment_to_serverListFragment"
             app:destination="@id/serverListFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_splitTunningFragment"
+            app:destination="@id/splitTunningFragment" />
     </fragment>
     <fragment
         android:id="@+id/rateScreenFragment"
@@ -40,6 +46,9 @@
         <action
             android:id="@+id/action_rateScreenFragment_to_menuFragment"
             app:destination="@id/menuFragment" />
+        <action
+            android:id="@+id/action_rateScreenFragment_to_serverListFragment"
+            app:destination="@id/serverListFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportScreenFragment"
@@ -62,5 +71,19 @@
         android:id="@+id/settingFragment"
         android:name="com.xilli.stealthnet.ui.menu.SettingFragment"
         android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_languageFragment"
+            app:destination="@id/languageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="com.xilli.stealthnet.ui.menu.LanguageFragment"
+        android:label="fragment_language"
+        tools:layout="@layout/fragment_language" />
+    <fragment
+        android:id="@+id/splitTunningFragment"
+        android:name="com.xilli.stealthnet.ui.menu.SplitTunningFragment"
+        android:label="SplitTunningFragment"
+        tools:layout="@layout/fragment_split_tunning"/>
 </navigation>

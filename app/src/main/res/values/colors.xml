@@ -2,13 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    #232323
+
 
     <color name="background_nav">#232323</color>
-
+    <color name="actionbar">#141414</color>
     <color name="custom_hint_color">#8F8F8F</color>
 
     <color name="selected">#5FF053</color>
     <color name="unselected">#8F8F8F</color>
 
+    <color name="disconnectview">#444444</color>
+
+    <color name="connectiontextcolor">#1E1E1E</color>
 </resources>

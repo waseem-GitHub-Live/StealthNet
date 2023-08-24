@@ -9,10 +9,17 @@
         <item name="android:textColorHint">@color/custom_hint_color</item>
     </style>
 
-    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/selected</item> <!-- For selected state -->
-        <item name="android:checkedButton">@drawable/unselected</item> <!-- For unselected state -->
+<!--    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">-->
+<!--        <item name="android:button">@drawable/selected</item> &lt;!&ndash; For selected state &ndash;&gt;-->
+<!--        <item name="android:checkedButton">@drawable/unselected</item> &lt;!&ndash; For unselected state &ndash;&gt;-->
+<!--    </style>-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize other attributes as needed -->
+        <item name="android:statusBarColor">@color/actionbar</item>
+        <!-- Set the background color of the Toolbar -->
     </style>
+
 
 
 
