@@ -111,6 +111,16 @@
                 app:layout_constraintHeight_percent="0.01"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent="0.91" />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:track="@drawable/checked_switch"
+                android:padding="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -154,6 +164,16 @@
                 app:layout_constraintHeight_percent="0.01"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent="0.91" />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:track="@drawable/checked_switch"
+                android:padding="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -197,6 +217,16 @@
                 app:layout_constraintHeight_percent="0.01"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent="0.91" />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:track="@drawable/checked_switch"
+                android:padding="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -239,6 +269,16 @@
                 app:layout_constraintHeight_percent="0.01"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_percent="0.91" />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:track="@drawable/checked_switch"
+                android:padding="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

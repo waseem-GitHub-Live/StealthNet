@@ -7,13 +7,25 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.data.DataItemFree
 
 class SearchView_Free_Adapter(private val context: Context, private val dataList: List<DataItemFree>) :
     RecyclerView.Adapter<SearchView_Free_Adapter.ViewHolder>() {
-
+    private var onItemClickListener: ((Int) -> Unit)? = null
+    private var selectedPosition: Int = RecyclerView.NO_POSITION
+    fun setSelectedPosition(position: Int) {
+        selectedPosition = position
+    }
+    fun setOnItemClickListener(listener: (Int) -> Unit) {
+        onItemClickListener = listener
+    }
+    fun resetSelection() {
+        selectedPosition = RecyclerView.NO_POSITION
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.item_free_server, parent, false)
@@ -28,6 +40,12 @@ class SearchView_Free_Adapter(private val context: Context, private val dataList
         holder.vpnIpTextView.text = data.IPdescription
         holder.signalview.setImageResource(data.signal)
         holder.radioButton.isChecked = data.radioButtonChecked
+        val isSelected = position == selectedPosition
+        holder.radioButton.isChecked = isSelected
+        holder.constraintLayout.setBackgroundResource(
+            if (isSelected) R.drawable.selector_background
+            else R.drawable.background_black_card
+        )
     }
 
     override fun getItemCount(): Int {
@@ -38,17 +56,25 @@ class SearchView_Free_Adapter(private val context: Context, private val dataList
         val flagImageView: ImageView = itemView.findViewById(R.id.imageView200)
         val flagNameTextView: TextView = itemView.findViewById(R.id.flag_name2)
         val vpnIpTextView: TextView = itemView.findViewById(R.id.vpn_ip2)
-        val signalview: ImageView =itemView.findViewById(R.id.signalgreen2)
-        val radioButton: RadioButton =itemView.findViewById(R.id.radio2)
+        val signalview: ImageView = itemView.findViewById(R.id.signalgreen2)
+        val radioButton: RadioButton = itemView.findViewById(R.id.radio2)
+        val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraintLayout400)
+
         init {
             radioButton.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val data = dataList[position]
-                    data.radioButtonChecked = radioButton.isChecked
-                    notifyItemChanged(position)
+                    onItemClickListener?.invoke(position)
+                }
+            }
+
+            constraintLayout.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClickListener?.invoke(position)
                 }
             }
         }
     }
+
 }

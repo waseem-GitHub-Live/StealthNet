@@ -1,11 +1,11 @@
 package com.xilli.stealthnet.ui
 
+import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +14,7 @@ import com.xilli.stealthnet.adapter.SearchView_Free_Adapter
 import com.xilli.stealthnet.adapter.SearchView_Premium_Adapter
 import com.xilli.stealthnet.data.DataItemFree
 import com.xilli.stealthnet.data.DataItemPremium
+import com.xilli.stealthnet.adapter.OnItemSelectedListener
 import com.xilli.stealthnet.databinding.FragmentServerListBinding
 import java.util.ArrayList
 
@@ -25,8 +26,7 @@ class ServerListFragment : Fragment() {
     private var mList1 = ArrayList<DataItemPremium>()
     private var mList2 = ArrayList<DataItemFree>()
     private var isBackgroundChanged = false
-
-
+    private var selectedPosition = RecyclerView.NO_POSITION
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,22 +45,35 @@ class ServerListFragment : Fragment() {
         clicklistner()
     }
 
+    private fun setupPremiumRecyclerView() {
+        recyclerView = binding?.recyclerView ?: return
+        adapterPREMIUM = SearchView_Premium_Adapter(requireContext(), mList1)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapterPREMIUM
+
+        adapterPREMIUM.setOnItemClickListener { position ->
+            adapterPREMIUM.setSelectedPosition(position)
+            adapterFREE.resetSelection()
+
+            adapterPREMIUM.notifyDataSetChanged()
+            adapterFREE.notifyDataSetChanged()
+        }
+    }
+
     private fun setupFreeRecyclerView() {
         recyclerView = binding?.recyclerview2 ?: return
         adapterFREE = SearchView_Free_Adapter(requireContext(), mList2)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapterFREE
 
+        adapterFREE.setOnItemClickListener { position ->
+            adapterFREE.setSelectedPosition(position)
+            adapterPREMIUM.resetSelection()
+
+            adapterFREE.notifyDataSetChanged()
+            adapterPREMIUM.notifyDataSetChanged()
+        }
     }
-
-    private fun setupPremiumRecyclerView() {
-        recyclerView = binding?.recyclerView ?: return
-        adapterPREMIUM = SearchView_Premium_Adapter(requireContext(), mList1)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapterPREMIUM
-    }
-
-
     private fun clicklistner() {
         binding?.imageView7?.setOnClickListener {
             findNavController().popBackStack()
@@ -68,8 +81,19 @@ class ServerListFragment : Fragment() {
         binding?.constraintLayout2?.setOnClickListener {
             isBackgroundChanged = !isBackgroundChanged
             updateBackgroundState()
+            binding?.radio?.isChecked = !binding?.radio?.isChecked!!
+
+            selectedPosition = RecyclerView.NO_POSITION
+            adapterFREE.setSelectedPosition(selectedPosition)
+            adapterPREMIUM.setSelectedPosition(selectedPosition)
+
+            adapterFREE.notifyDataSetChanged()
+            adapterPREMIUM.notifyDataSetChanged()
+
         }
     }
+
+
     private fun updateBackgroundState() {
         if (isBackgroundChanged) {
             binding?.constraintLayout2?.setBackgroundResource(R.drawable.selector_background)

@@ -32,6 +32,8 @@
     <string name="neatherland">Neatherland</string>
     <string name="disconnect_timer_initial">Disconnect</string>
     <string name="details_splittunning">All apps run through encrypted VPN connection. If you\nwant to exclude any app, tap the button on the right.</string>
+    <string name="description_reminder">Only 10 minutes left on your free VPN session!\nUpgrade now for uninterrupted browsing.</string>
+    <string name="description_onboarding_screen">StealthNet VPN has always been committed to protecting\n your privacy and your data. The European Union’s General\nData Protection Regulation has prompted us to review our\npolicies and make sure that we are doing the right thing for\n all of our users worldwide.</string>
 
 
 </resources>
