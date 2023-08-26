@@ -11,29 +11,20 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_menuFragment"
-            app:destination="@id/menuFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_rateScreenFragment"
             app:destination="@id/rateScreenFragment" />
         <action
             android:id="@+id/action_homeFragment_to_serverListFragment"
             app:destination="@id/serverListFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/menuFragment"
-        android:name="com.xilli.stealthnet.ui.menu.MenuFragment"
-        android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu" >
         <action
-            android:id="@+id/action_menuFragment_to_settingFragment"
+            android:id="@+id/action_homeFragment_to_splitTunningFragment"
+            app:destination="@id/splitTunningFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
         <action
-            android:id="@+id/action_menuFragment_to_serverListFragment"
-            app:destination="@id/serverListFragment" />
-        <action
-            android:id="@+id/action_menuFragment_to_splitTunningFragment"
-            app:destination="@id/splitTunningFragment" />
+            android:id="@+id/action_homeFragment_to_languageFragment"
+            app:destination="@id/languageFragment" />
     </fragment>
     <fragment
         android:id="@+id/rateScreenFragment"
@@ -44,11 +35,20 @@
             android:id="@+id/action_rateScreenFragment_to_reportScreenFragment"
             app:destination="@id/reportScreenFragment" />
         <action
-            android:id="@+id/action_rateScreenFragment_to_menuFragment"
-            app:destination="@id/menuFragment" />
-        <action
             android:id="@+id/action_rateScreenFragment_to_serverListFragment"
             app:destination="@id/serverListFragment" />
+        <action
+            android:id="@+id/action_rateScreenFragment_to_splitTunningFragment"
+            app:destination="@id/splitTunningFragment" />
+        <action
+            android:id="@+id/action_rateScreenFragment_to_splitTunningFragment2"
+            app:destination="@id/splitTunningFragment" />
+        <action
+            android:id="@+id/action_rateScreenFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_rateScreenFragment_to_languageFragment"
+            app:destination="@id/languageFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportScreenFragment"
@@ -86,4 +86,13 @@
         android:name="com.xilli.stealthnet.ui.menu.SplitTunningFragment"
         android:label="SplitTunningFragment"
         tools:layout="@layout/fragment_split_tunning"/>
+    <fragment
+        android:id="@+id/onboardingScreenFragment"
+        android:name="com.xilli.stealthnet.ui.OnboardingScreenFragment"
+        android:label="fragment_onboarding_screen"
+        tools:layout="@layout/fragment_onboarding_screen" >
+        <action
+            android:id="@+id/action_onboardingScreenFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

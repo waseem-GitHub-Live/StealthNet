@@ -59,4 +59,11 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
 
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
+    implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
+    implementation ("com.google.android.material:material:1.9.0")
+    implementation ("androidx.recyclerview:recyclerview:1.3.1")
+
+
 }

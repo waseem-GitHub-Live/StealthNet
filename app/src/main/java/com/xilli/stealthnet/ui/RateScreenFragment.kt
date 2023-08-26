@@ -16,6 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.findNavController
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.databinding.FragmentRateScreenBinding
@@ -106,8 +108,7 @@ class RateScreenFragment : Fragment() {
             override fun handleOnBackPressed() {
                 if (!backPressedOnce) {
                     backPressedOnce = true
-                    Toast.makeText(requireContext(), "Press Cross icon to Disconnect", Toast.LENGTH_SHORT).show()
-                    view?.postDelayed({ backPressedOnce = false }, 2000)
+                    disconnectmethod()
                 } else {
                     requireActivity().onBackPressed()
                 }
@@ -127,61 +128,80 @@ class RateScreenFragment : Fragment() {
 
     private fun clicklistner() {
         binding?.menu?.setOnClickListener {
-            val action = RateScreenFragmentDirections.actionRateScreenFragmentToMenuFragment()
-            findNavController().navigate(action)
+            val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.constraintlayoutmenu)
+            drawerLayout.openDrawer(GravityCompat.START)
         }
         binding?.crosscancel?.setOnClickListener {
-            val dialogView =
-                LayoutInflater.from(requireContext()).inflate(R.layout.dialog_cancel_vpn, null)
-            val dialog = AlertDialog.Builder(requireContext(), R.style.TransparentAlertDialogTheme)
-                .setView(dialogView)
-                .create()
-            alertdialog(dialog)
-            dialog.show()
+            disconnectmethod()
 
-            val cancelTextView = dialogView.findViewById<TextView>(R.id.cancel)
-            cancelTextView.setOnClickListener {
-                dialog.dismiss()
-            }
-
-            val disconnectTextView = dialogView.findViewById<TextView>(R.id.disconnct)
-            disconnectTextView.text = getString(R.string.disconnect_timer_initial)
-
-
-            val originalDisconnectBackground = disconnectTextView.background
-            val originalDisconnectTextColor = disconnectTextView.currentTextColor
-
-            var remainingTime = countdownValue
-            countDownTimer = object : CountDownTimer((countdownValue * 1000).toLong(), 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    remainingTime--
-                    disconnectTextView.text = "Disconnect ($remainingTime s)"
-                    // Change the background color and text color here
-                    val disconnectViewColor = ContextCompat.getColor(requireContext(), R.color.disconnectview)
-                    disconnectTextView.setBackgroundResource(R.drawable.disconnect_timer_drawable)
-                    disconnectTextView.setTextColor(disconnectViewColor)// Example: Change text color to white
-                }
-
-                override fun onFinish() {
-                    // Countdown complete, navigate or perform your desired action
-                    disconnectTextView.setOnClickListener {
-                        val action = RateScreenFragmentDirections.actionRateScreenFragmentToReportScreenFragment()
-                        findNavController().navigate(action)
-                        dialog.dismiss()
-                    }
-
-                    // Restore original background color and text color
-                    disconnectTextView.background = originalDisconnectBackground
-                    disconnectTextView.setTextColor(originalDisconnectTextColor)
-                    disconnectTextView.text = getString(R.string.disconnect_timer_initial)
-                }
-            }
-            countDownTimer?.start()
         }
         binding?.constraintLayout2?.setOnClickListener {
             val action = RateScreenFragmentDirections.actionRateScreenFragmentToServerListFragment()
             findNavController().navigate(action)
         }
+        binding?.navigationView?.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.settings_menu -> {
+                    findNavController().navigate(RateScreenFragmentDirections.actionRateScreenFragmentToSettingFragment())
+                }
+                R.id.server_menu -> {
+                    findNavController().navigate(RateScreenFragmentDirections.actionRateScreenFragmentToServerListFragment())
+                }
+                R.id.split_menu -> {
+                    findNavController().navigate(RateScreenFragmentDirections.actionRateScreenFragmentToSplitTunningFragment2())
+                }
+            }
+            true
+        }
+    }
+
+    private fun disconnectmethod() {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_cancel_vpn, null)
+        val dialog = AlertDialog.Builder(requireContext(), R.style.TransparentAlertDialogTheme)
+            .setView(dialogView)
+            .create()
+        alertdialog(dialog)
+        dialog.show()
+
+        val cancelTextView = dialogView.findViewById<TextView>(R.id.cancel)
+        cancelTextView.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        val disconnectTextView = dialogView.findViewById<TextView>(R.id.disconnct)
+        disconnectTextView.text = getString(R.string.disconnect_timer_initial)
+
+
+        val originalDisconnectBackground = disconnectTextView.background
+        val originalDisconnectTextColor = disconnectTextView.currentTextColor
+
+        var remainingTime = countdownValue
+        countDownTimer = object : CountDownTimer((countdownValue * 1000).toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                remainingTime--
+                disconnectTextView.text = "Disconnect ($remainingTime s)"
+                // Change the background color and text color here
+                val disconnectViewColor = ContextCompat.getColor(requireContext(), R.color.disconnectview)
+                disconnectTextView.setBackgroundResource(R.drawable.disconnect_timer_drawable)
+                disconnectTextView.setTextColor(disconnectViewColor)// Example: Change text color to white
+            }
+
+            override fun onFinish() {
+                // Countdown complete, navigate or perform your desired action
+                disconnectTextView.setOnClickListener {
+                    val action = RateScreenFragmentDirections.actionRateScreenFragmentToReportScreenFragment()
+                    findNavController().navigate(action)
+                    dialog.dismiss()
+                }
+
+                // Restore original background color and text color
+                disconnectTextView.background = originalDisconnectBackground
+                disconnectTextView.setTextColor(originalDisconnectTextColor)
+                disconnectTextView.text = getString(R.string.disconnect_timer_initial)
+            }
+        }
+        countDownTimer?.start()
     }
 
     private val mRunnable: Runnable = object : Runnable {

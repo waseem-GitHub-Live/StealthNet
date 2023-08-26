@@ -43,6 +43,7 @@ class ServerListFragment : Fragment() {
         setupPremiumRecyclerView()
         setupFreeRecyclerView()
         clicklistner()
+        binding?.constraintLayout2?.performClick()
     }
 
     private fun setupPremiumRecyclerView() {
