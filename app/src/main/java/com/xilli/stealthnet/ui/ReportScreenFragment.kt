@@ -30,9 +30,11 @@ class ReportScreenFragment : Fragment() {
         clicklistener()
     }
 
+
     private fun clicklistener() {
         binding?.imageView5?.setOnClickListener {
-            findNavController().popBackStack()
+            val action = ReportScreenFragmentDirections.actionReportScreenFragmentToHomeFragment()
+            findNavController().navigate(action)
         }
         binding?.backHome?.setOnClickListener {
             val action = ReportScreenFragmentDirections.actionReportScreenFragmentToHomeFragment()
