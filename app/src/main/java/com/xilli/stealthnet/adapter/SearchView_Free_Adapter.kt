@@ -11,11 +11,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.data.DataItemFree
+import com.xilli.stealthnet.data.DataItemPremium
+import com.xilli.stealthnet.helper.Countries
 
-class SearchView_Free_Adapter(private val context: Context, private val dataList: List<DataItemFree>) :
+class SearchView_Free_Adapter(private val context: Context, private val dataList: List<DataItemFree>,private val selectedServer: DataItemPremium?) :
     RecyclerView.Adapter<SearchView_Free_Adapter.ViewHolder>() {
     private var onItemClickListener: ((Int) -> Unit)? = null
     private var selectedPosition: Int = RecyclerView.NO_POSITION
+    var datalist = ArrayList<Countries>()
     fun setSelectedPosition(position: Int) {
         selectedPosition = position
     }
@@ -31,6 +34,13 @@ class SearchView_Free_Adapter(private val context: Context, private val dataList
             LayoutInflater.from(parent.context).inflate(R.layout.item_free_server, parent, false)
         return ViewHolder(view)
     }
+    fun setData(servers: List<Countries?>) {
+        datalist.clear()
+        datalist.addAll(servers.filterNotNull()) // Filter out null elements if any
+        notifyDataSetChanged()
+        selectedPosition = RecyclerView.NO_POSITION
+    }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataList[position]

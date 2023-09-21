@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1077443523479",
+    "project_id": "vpn-app-d5bd3",
+    "storage_bucket": "vpn-app-d5bd3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077443523479:android:4f5050d4393e43890c0ad2",
+        "android_client_info": {
+          "package_name": "com.xilli.stealthnet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZPuMGDNu5oQtUIMN0uRmZv3RPr55m2SQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

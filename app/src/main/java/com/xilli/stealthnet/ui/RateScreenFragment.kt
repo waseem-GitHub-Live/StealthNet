@@ -83,45 +83,10 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
         setupBackPressedCallback()
         startRunnable()
         updateTrafficStats()
-        flagipname()
         val filter = IntentFilter("com.xilli.stealthnet.elapsedTime")
         requireContext().registerReceiver(elapsedTimeReceiver, filter)
     }
 
-    private fun flagipname() {
-        AppHelper.getGeolocationData(object : GeolocationCallback {
-            override fun onDataReceived(country: String, city: String, flagURL: String) {
-                handler.post {
-                    val defaultFlagURL = "https://www.google.com/search?q=turkey+flag+png&rlz=1C1GCEU_enPK1071PK1071&oq=turkey+flag+png&aqs=chrome..69i57j0i512l2j0i22i30l7.10006j0j7&sourceid=chrome&ie=UTF-8#vhid=EsMjBWGG48ayhM&vssid=l"
-                    binding?.flagName?.text = country
-                    val imageUrl = if (flagURL.isNullOrEmpty()) defaultFlagURL else flagURL
-                    Picasso.get().load(imageUrl).into(binding?.flagimageView)
-                }
-            }
-
-            override fun onError(error: String) {
-                handler.post {
-                    binding?.flagName?.text = "Unknown"
-                    // Handle error as needed for geolocation
-                }
-            }
-        })
-
-        // Retrieve public IP address
-        AppHelper.getPublicIPAddress(
-            callback = { ipAddress ->
-                handler.post {
-                    binding?.vpnIp?.text = "VPN IP Address: $ipAddress"
-                }
-            },
-            errorCallback = {
-                handler.post {
-                    binding?.vpnIp?.text = "VPN IP Address: Unknown"
-                    // Handle error as needed for public IP address retrieval
-                }
-            }
-        )
-    }
     private val elapsedTimeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "com.xilli.stealthnet.elapsedTime") {

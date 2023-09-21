@@ -1,17 +1,23 @@
 package com.xilli.stealthnet.ui
 
+import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.net.VpnService
 import android.os.Bundle
 import android.os.Handler
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -46,7 +52,57 @@ class HomeFragment : Fragment(), VpnServiceCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         clicklistner()
+        backexitclick()
     }
+
+    private fun backexitclick() {
+        view?.isFocusableInTouchMode = true
+        view?.requestFocus()
+        view?.setOnKeyListener { _, keyCode, _ ->
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                showAlertDialog()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+    }
+
+    private fun showAlertDialog() {
+        val alertDialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_exit, null)
+
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+
+        alertDialogBuilder.setView(alertDialogView)
+
+        val exitButton = alertDialogView.findViewById<ConstraintLayout>(R.id.exitbutton)
+        val cancelButton = alertDialogView.findViewById<ConstraintLayout>(R.id.cancelbutton2)
+
+        exitButton.setOnClickListener {
+            activity?.finish()
+        }
+        val alertDialog = alertDialogBuilder.create()
+        cancelButton.setOnClickListener {
+
+            alertDialog.dismiss()
+        }
+
+        val dialogWindow = alertDialog.window
+        dialogWindow?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        alertDialog.show()
+    }
+
+
+
+//    private fun alertdialogexit(dialogInterface: DialogInterface) {
+//        val alertSheetDialog = dialogInterface as AlertDialog
+//        val alertdialog = alertSheetDialog.findViewById<View>(
+//            com.google.android.material.R.id.alertTitle
+//        )
+//            ?: return
+//        alertdialog.setBackgroundColor(Color.TRANSPARENT)
+//    }
 
     private fun loadLottieAnimation() {
         binding?.lottieAnimationView?.setAnimation(R.raw.loading_animation)
@@ -159,5 +215,16 @@ class HomeFragment : Fragment(), VpnServiceCallback {
         notificationManager.cancel(VpnServices.NOTIFICATION_ID)
         isVpnStarted = false
     }
+
+    private fun alertdialog(dialogInterface: DialogInterface) {
+        val alertSheetDialog = dialogInterface as AlertDialog
+        val alertdialog = alertSheetDialog.findViewById<View>(
+            com.google.android.material.R.id.alertTitle
+        )
+            ?: return
+        alertdialog.setBackgroundColor(Color.TRANSPARENT)
+    }
+
+
 
 }

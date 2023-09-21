@@ -4,12 +4,15 @@
     <style name="TransparentAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-    <style name="SearchViewStyle">
-        <item name="android:textColor">@color/white</item>
+    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Set text color to white -->
+        <item name="android:textColor">#FFFFFF</item>
+        <!-- Set text hint color to your custom hint color -->
         <item name="android:textColorHint">@color/custom_hint_color</item>
     </style>
 
-<!--    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">-->
+
+    <!--    <style name="CustomRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">-->
 <!--        <item name="android:button">@drawable/selected</item> &lt;!&ndash; For selected state &ndash;&gt;-->
 <!--        <item name="android:checkedButton">@drawable/unselected</item> &lt;!&ndash; For unselected state &ndash;&gt;-->
 <!--    </style>-->
@@ -37,4 +40,7 @@
         <item name="android:fontFamily">@font/urbanist_semibold_600</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
+
+
 </resources>

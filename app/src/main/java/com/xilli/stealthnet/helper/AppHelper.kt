@@ -71,11 +71,9 @@ object AppHelper {
                         val ipAddress = jsonObject.optString("ip")
                         callback(ipAddress)
                     } catch (e: JSONException) {
-                        // Handle JSON parsing error, for example, by calling the errorCallback
                         errorCallback()
                     }
                 } else {
-                    // Handle empty response, for example, by calling the errorCallback
                     errorCallback()
                 }
             }

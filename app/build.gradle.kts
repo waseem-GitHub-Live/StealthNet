@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id ("androidx.navigation.safeargs.kotlin")
+    id ("com.onesignal.androidsdk.onesignal-gradle-plugin")
 }
 
 android {
@@ -11,12 +12,17 @@ android {
     defaultConfig {
         applicationId = "com.xilli.stealthnet"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        val newManifestPlaceholders = manifestPlaceholders.toMutableMap()
 
+        newManifestPlaceholders["onesignal_app_id"] = "a2be7720-a32b-415a-9db1-d50fdc54f069"
+        newManifestPlaceholders["onesignal_google_project_number"] = "REMOTE"
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     buildTypes {
         release {
@@ -42,24 +48,24 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation ("com.airbnb.android:lottie:4.2.0")
 
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
-    "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.2")
+//    "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
 
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation ("com.google.android.material:material:1.9.0")
@@ -69,6 +75,9 @@ dependencies {
 
     implementation ("com.squareup.picasso:picasso:2.71828")
 
+   implementation ("com.onesignal:OneSignal:4.4.1")
 
+    implementation ("com.github.oneconnectapi:OneConnectLib:v1.0.9")
 
+    implementation ("com.intuit.sdp:sdp-android:1.0.5")
 }
