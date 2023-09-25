@@ -1,43 +1,74 @@
 package com.xilli.stealthnet.ui
 
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
-import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.net.VpnService
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.ParcelFileDescriptor
+import android.os.Parcel
+import android.os.RemoteException
+import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieDrawable
+import com.bumptech.glide.Glide
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.databinding.FragmentHomeBinding
-import com.xilli.stealthnet.helper.VpnServiceCallback
-import com.xilli.stealthnet.ui.services.VpnServices
+import com.xilli.stealthnet.helper.ActiveServer
+import com.xilli.stealthnet.helper.Countries
+import com.xilli.stealthnet.helper.Utility
+import com.xilli.stealthnet.helper.Utility.textDownloading
+import com.xilli.stealthnet.helper.Utility.textUploading
+import com.xilli.stealthnet.helper.Utility.updateUI
 import com.xilli.stealthnet.ui.viewmodels.VpnViewModel
+import top.oneconnectapi.app.OpenVpnApi
+import top.oneconnectapi.app.core.OpenVPNThread
 
-class HomeFragment : Fragment(), VpnServiceCallback {
-    private var binding: FragmentHomeBinding? = null
-    private var vpnService: VpnServices? = null
+class HomeFragment : Fragment(){
+     private var binding: FragmentHomeBinding? = null
     private lateinit var viewModel: VpnViewModel
-    var vpnInterface: ParcelFileDescriptor? = null
-    private val VPN_REQUEST_CODE = 123
-    private var isVpnStarted = false
+    var selectedCountry: Countries? = null
+    private var isFirst = true
+    private var connectBtnTextView: ImageView? = null
+    private var connectionStateTextView: TextView? = null
+    private var timerTextView: TextView? = null
+    private var isButtonClicked = true
+    private val clickHandler = Handler()
+    private var isNavigationInProgress = false
+    companion object {
+        var type = ""
+        val activeServer = ActiveServer()
+        var STATUS = "DISCONNECTED"
+    }
+    @JvmField
+    var flagName: TextView? = null
+
+    @JvmField
+    var imgFlag: ImageView? = null
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +77,11 @@ class HomeFragment : Fragment(), VpnServiceCallback {
         loadLottieAnimation()
         viewModel = ViewModelProvider(requireActivity())[VpnViewModel::class.java]
         binding?.lifecycleOwner = viewLifecycleOwner
+        connectionStateTextView = binding?.root?.findViewById(R.id.textView6)
+        connectBtnTextView = binding?.root?.findViewById(R.id.imageView4)
+        timerTextView = binding?.root?.findViewById(R.id.timeline)
+
+
         return binding?.root
     }
 
@@ -94,7 +130,6 @@ class HomeFragment : Fragment(), VpnServiceCallback {
     }
 
 
-
 //    private fun alertdialogexit(dialogInterface: DialogInterface) {
 //        val alertSheetDialog = dialogInterface as AlertDialog
 //        val alertdialog = alertSheetDialog.findViewById<View>(
@@ -119,20 +154,29 @@ class HomeFragment : Fragment(), VpnServiceCallback {
 
     private fun clicklistner() {
         binding?.menu?.setOnClickListener {
-            val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.constraintlayoutmenu)
+            val drawerLayout =
+                requireActivity().findViewById<DrawerLayout>(R.id.constraintlayoutmenu)
             drawerLayout.openDrawer(GravityCompat.START)
         }
         binding?.imageView4?.setOnClickListener {
-            startVpn()
+            isButtonClicked = false
+            btnConnectDisconnect()
             loadLottieAnimation()
-            binding?.power?.visibility = View.GONE
-            binding?.lottieAnimationView?.visibility = View.VISIBLE
-            binding?.connect?.text = "Connecting"
-            Handler().postDelayed({
-                val action = HomeFragmentDirections.actionHomeFragmentToRateScreenFragment()
-                findNavController().navigate(action)
-            }, 3000)
+            if (selectedCountry != null) {
+                binding?.power?.visibility = View.GONE
+                binding?.lottieAnimationView?.visibility = View.VISIBLE
+                binding?.connect?.text = "Connecting"
+
+                Handler().postDelayed({
+                    val action = HomeFragmentDirections.actionHomeFragmentToRateScreenFragment()
+                    findNavController().navigate(action)
+                    isNavigationInProgress = true
+                    isButtonClicked = true
+                    isNavigationInProgress = false
+                }, 3000)
+            }
         }
+
 
         binding?.constraintLayout2?.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToServerListFragment()
@@ -143,9 +187,12 @@ class HomeFragment : Fragment(), VpnServiceCallback {
                 R.id.settings_menu -> {
                     findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSettingFragment())
                 }
+
                 R.id.server_menu -> {
-                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToServerListFragment())
+                    val action = HomeFragmentDirections.actionHomeFragmentToServerListFragment()
+                    findNavController().navigate(action)
                 }
+
                 R.id.split_menu -> {
                     findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSplitTunningFragment())
                 }
@@ -162,59 +209,7 @@ class HomeFragment : Fragment(), VpnServiceCallback {
         }
         loadLottieAnimation()
     }
-    private fun startVpn() {
-        val intent = VpnService.prepare(context)
-        if (intent != null) {
-            startActivityForResult(intent, VPN_REQUEST_CODE)
-        } else {
-            startVpnService()
-        }
-    }
 
-    private fun startVpnService() {
-        val vpnIntent = Intent(requireContext(), VpnServices::class.java)
-        ContextCompat.startForegroundService(requireContext(), vpnIntent)
-        isVpnStarted = true
-        Log.d("vpn", "VPN service start")
-        val service = vpnIntent.component?.className
-        if (service == VpnServices::class.java.name) {
-            val vpnService = vpnIntent as? VpnServices
-            vpnService?.setVpnServiceCallback(this,this)
-        }
-    }
-
-    override fun onElapsedTimeUpdated(elapsedTimeString: String) {
-
-    }
-
-    override fun onVpnServiceStarted() {
-        val vpnIntent = Intent(requireContext(), VpnServices::class.java)
-        ContextCompat.startForegroundService(requireContext(), vpnIntent)
-        isVpnStarted = true
-
-        val service = vpnIntent.component?.className
-        if (service == VpnServices::class.java.name) {
-            val vpnService = vpnIntent as? VpnServices
-
-            // Start the VPN service first
-            vpnService?.startVpn()
-
-            // Set the callback
-            vpnService?.setVpnServiceCallback(this, this)
-        }
-    }
-
-
-
-    override fun onVpnServiceStopped() {
-        val vpnIntent = Intent(requireContext(), VpnServices::class.java)
-        requireContext().stopService(vpnIntent)
-
-        val notificationManager =
-            requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(VpnServices.NOTIFICATION_ID)
-        isVpnStarted = false
-    }
 
     private fun alertdialog(dialogInterface: DialogInterface) {
         val alertSheetDialog = dialogInterface as AlertDialog
@@ -227,4 +222,198 @@ class HomeFragment : Fragment(), VpnServiceCallback {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(broadcastReceiver, IntentFilter("connectionState"))
+        selectedCountry = arguments?.getParcelable("c") as? Countries
+        type = arguments?.getString("type").toString()
+
+        if (selectedCountry != null) {
+            updateUI("LOAD")
+            if (!Utility.isOnline(requireContext())) {
+                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            } else {
+                startVpnnew()
+            }
+            imgFlag?.let {
+                Glide.with(this)
+                    .load(selectedCountry?.getFlagUrl1())
+                    .into(it)
+            }
+            flagName?.text = selectedCountry?.getCountry1()
+        }
+
+        if (TextUtils.isEmpty(type)) {
+            Log.v("AD_TYPE", "null")
+        }
+    }
+    private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                intent.getStringExtra("state")?.let { updateUI(it) }
+                Log.v("CHECKSTATE", intent.getStringExtra("state")!!)
+                if (isFirst) {
+                    if (getContext()?.let { RateScreenFragment.activeServer.getSavedServer(it)?.getCountry1() } != null) {
+                        selectedCountry = getContext()?.let { RateScreenFragment.activeServer.getSavedServer(it) }
+                        getContext()?.let {
+                            imgFlag?.let { it1 ->
+                                Glide.with(it)
+                                    .load(selectedCountry?.getFlagUrl1())
+                                    .into(it1)
+                            }
+                        }
+                        flagName?.setText(selectedCountry?.getCountry1())
+                    }
+                    isFirst = false
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            try {
+                var duration = intent.getStringExtra("duration")
+                var lastPacketReceive = intent.getStringExtra("lastPacketReceive")
+                var byteIn = intent.getStringExtra("byteIn")
+                var byteOut = intent.getStringExtra("byteOut")
+                if (duration == null) duration = "00:00:00"
+                if (lastPacketReceive == null) lastPacketReceive = "0"
+                if (byteIn == null) byteIn = " "
+                if (byteOut == null) byteOut = " "
+                updateConnectionStatus(duration, lastPacketReceive, byteIn, byteOut)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+     fun updateConnectionStatus(
+        duration: String?,
+        lastPacketReceive: String?,
+        byteIn: String,
+        byteOut: String
+    ) {
+        val byteinKb = byteIn.split("-").toTypedArray()[1]
+        val byteoutKb = byteOut.split("-").toTypedArray()[1]
+
+        Utility.textDownloading!!.text = byteinKb
+        Utility.textUploading!!.text = byteoutKb
+        Utility.timerTextView!!.text = duration
+    }
+     private fun prepareVpn() {
+        imgFlag?.let {
+            Glide.with(this)
+                .load(selectedCountry?.getFlagUrl1())
+                .into(it)
+        }
+        flagName?.setText(selectedCountry?.getCountry1())
+        if (Utility.isOnline(requireContext())) {
+            if (selectedCountry != null) {
+                val intent = VpnService.prepare(requireContext())
+                Log.v("CHECKSTATE", "start")
+                if (intent != null) {
+                    startActivityForResult(intent, 1)
+                } else startVpnnew()
+            } else {
+                isButtonClicked =  false
+                Toast.makeText(context, "Please select a server first", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, "No Internet Connection, error", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun startVpnnew() {
+        try {
+            // Log the value of selectedCountry
+            Log.d("StartVPN", "selectedCountry: $selectedCountry")
+
+            selectedCountry?.let { activeServer.saveServer(it, requireContext()) }
+            OpenVpnApi.startVpn(
+                requireContext(),
+                selectedCountry?.getOvpn1(),
+                selectedCountry?.getCountry1(),
+                selectedCountry?.getOvpnUserName1(),
+                selectedCountry?.getOvpnUserPassword1()
+            )
+        } catch (e: RemoteException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 11) {
+            Toast.makeText(context, "Start Downloand", Toast.LENGTH_SHORT).show()
+            if (resultCode != RESULT_OK) {
+                Log.d("Update", "Update failed$resultCode")
+            }
+        }
+        if (resultCode == RESULT_OK) {
+            startVpnnew()
+        } else {
+            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun checkSelectedCountry() {
+
+        if (selectedCountry == null) {
+            isButtonClicked =  false
+            updateUI("DISCONNECT")
+            Toast.makeText(context, "Please select a server first", Toast.LENGTH_SHORT).show()
+        } else {
+            isButtonClicked =  true
+            prepareVpn()
+            updateUI("LOAD")
+        }
+    }
+
+    private fun disconnectAlert() {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        builder.setTitle("Do you want to disconnect?")
+        builder.setPositiveButton(
+            "Disconnect"
+        ) { _, _ ->
+            disconnectFromVpn()
+            STATUS = "DISCONNECTED"
+            if (textDownloading != null) {
+                textDownloading?.text = "0.0 kB/s"
+            } else {
+                Log.e("disconnectAlert", "textDownloading is null")
+            }
+            if (textUploading != null) {
+                textUploading?.text = "0.0 kB/s"
+            } else {
+                Log.e("disconnectAlert", "textUploading is null")
+            }
+
+            Toast.makeText(context, "Server Disconnected", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton(
+            "Cancel"
+        ) { _, _ ->
+            Toast.makeText(context, "Vpn Remains Connected", Toast.LENGTH_SHORT).show()
+        }
+        builder.show()
+    }
+
+    private fun disconnectFromVpn() {
+        try {
+            OpenVPNThread.stop()
+            updateUI("DISCONNECTED")
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun btnConnectDisconnect() {
+        if (STATUS == "DISCONNECTED") {
+            if (Utility.isOnline(requireContext())) {
+                checkSelectedCountry()
+            } else {
+                isButtonClicked = false
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            disconnectAlert()
+        }
+    }
 }

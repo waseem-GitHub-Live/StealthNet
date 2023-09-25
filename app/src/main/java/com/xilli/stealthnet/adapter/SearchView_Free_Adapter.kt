@@ -1,6 +1,8 @@
 package com.xilli.stealthnet.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,17 +10,19 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.xilli.stealthnet.R
-import com.xilli.stealthnet.data.DataItemFree
-import com.xilli.stealthnet.data.DataItemPremium
 import com.xilli.stealthnet.helper.Countries
+import com.xilli.stealthnet.ui.HomeFragment
 
-class SearchView_Free_Adapter(private val context: Context, private val dataList: List<DataItemFree>,private val selectedServer: DataItemPremium?) :
+class SearchView_Free_Adapter( private val dataList: List<Countries>,private val fragment: Fragment) :
     RecyclerView.Adapter<SearchView_Free_Adapter.ViewHolder>() {
     private var onItemClickListener: ((Int) -> Unit)? = null
     private var selectedPosition: Int = RecyclerView.NO_POSITION
-    var datalist = ArrayList<Countries>()
     fun setSelectedPosition(position: Int) {
         selectedPosition = position
     }
@@ -34,28 +38,27 @@ class SearchView_Free_Adapter(private val context: Context, private val dataList
             LayoutInflater.from(parent.context).inflate(R.layout.item_free_server, parent, false)
         return ViewHolder(view)
     }
-    fun setData(servers: List<Countries?>) {
-        datalist.clear()
-        datalist.addAll(servers.filterNotNull()) // Filter out null elements if any
-        notifyDataSetChanged()
-        selectedPosition = RecyclerView.NO_POSITION
-    }
-
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataList[position]
 
-        holder.flagImageView.setImageResource(data.flagimageUrl)
-        holder.flagNameTextView.text = data.title
-        holder.vpnIpTextView.text = data.IPdescription
+        Picasso.get().load(data.flagUrl).into(holder.flagImageView)
+        holder.flagNameTextView.text = data.country
         holder.signalview.setImageResource(data.signal)
-        holder.radioButton.isChecked = data.radioButtonChecked
+        holder.radioButton.isChecked = data.radiobutton
         val isSelected = position == selectedPosition
         holder.radioButton.isChecked = isSelected
         holder.constraintLayout.setBackgroundResource(
             if (isSelected) R.drawable.selector_background
             else R.drawable.background_black_card
         )
+        holder.constraintLayout.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable("c", data)
+            bundle.putString("type", HomeFragment.type)
+
+            val navController = fragment.findNavController()
+            navController.navigate(R.id.homeFragment, bundle)
+        }
     }
 
     override fun getItemCount(): Int {

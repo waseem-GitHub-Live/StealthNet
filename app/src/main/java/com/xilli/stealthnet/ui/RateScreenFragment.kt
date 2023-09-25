@@ -1,49 +1,45 @@
 package com.xilli.stealthnet.ui
 
 import android.app.AlertDialog
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.net.TrafficStats
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.databinding.FragmentRateScreenBinding
-import com.xilli.stealthnet.helper.AppHelper
-import com.xilli.stealthnet.helper.AppHelper.getPublicIPAddress
-import com.xilli.stealthnet.helper.AppHelper.vpnService
-import com.xilli.stealthnet.helper.GeolocationCallback
-import com.xilli.stealthnet.helper.PublicIPAddressCallback
+import com.xilli.stealthnet.helper.ActiveServer
+import com.xilli.stealthnet.helper.Countries
+import com.xilli.stealthnet.helper.Utility.textDownloading
+import com.xilli.stealthnet.helper.Utility.textUploading
+import com.xilli.stealthnet.helper.Utility.timerTextView
+import com.xilli.stealthnet.helper.Utility.updateUI
 import com.xilli.stealthnet.helper.VpnServiceCallback
-import com.xilli.stealthnet.ui.menu.MenuFragment
-import com.xilli.stealthnet.ui.services.VpnServices
 import com.xilli.stealthnet.ui.viewmodels.VpnViewModel
 
 
-class RateScreenFragment : Fragment(), VpnServiceCallback {
+class RateScreenFragment : Fragment(){
+
     private var binding: FragmentRateScreenBinding? = null
     private val mHandler = Handler()
     private var mStartRX: Long = 0
@@ -56,8 +52,17 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
     private var vpnCallback: VpnServiceCallback? = null
     private lateinit var viewModel: VpnViewModel
     private val handler = Handler(Looper.getMainLooper())
-
-
+    var selectedCountry: Countries? = null
+    private var isFirst = true
+    companion object {
+        var type = ""
+        val activeServer = ActiveServer()
+        var STATUS = "DISCONNECTED"
+    }
+    @JvmField
+    var flagName: TextView? = null
+    @JvmField
+    var imgFlag: ImageView? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,7 +81,7 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
         val storedStartTime = sharedPreferences.getLong("startTime", 0)
 
         // If startTime is not 0, update the startTime
-        val vpnService = (requireActivity().application as MyApplication).vpnService
+//        val vpnService = (requireActivity().application as MyApplication).vpnService
 
 
         clicklistner()
@@ -99,7 +104,7 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
         super.onResume()
 
         // Check if the vpnService reference is not null
-        vpnService?.updateStartTime(System.currentTimeMillis())
+//        vpnService?.updateStartTime(System.currentTimeMillis())
     }
 
 
@@ -180,7 +185,7 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
         binding?.crosscancel?.setOnClickListener {
             disconnectmethod()
         }
-        binding?.constraintLayout2?.setOnClickListener {
+        binding?.constraintLayout2details?.setOnClickListener {
             val action = RateScreenFragmentDirections.actionRateScreenFragmentToServerListFragment()
             findNavController().navigate(action)
         }
@@ -237,7 +242,7 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
                 disconnectTextView.setOnClickListener {
                     val action = RateScreenFragmentDirections.actionRateScreenFragmentToReportScreenFragment()
                     findNavController().navigate(action)
-                    stopVpn()
+//                    stopVpn()
                     dialog.dismiss()
                 }
 
@@ -265,44 +270,55 @@ class RateScreenFragment : Fragment(), VpnServiceCallback {
         onBackPressedCallback.remove()
         super.onDestroyView()
     }
-    private fun stopVpn() {
-            val vpnIntent = Intent(requireContext(), VpnServices::class.java)
-            vpnIntent.action = "stop_vpn"
-            requireContext().startService(vpnIntent)
-            isVpnStarted = false
-        vpnCallback?.onVpnServiceStopped()
-    }
 
-
-    override fun onElapsedTimeUpdated(elapsedTimeString: String) {
-            binding?.timeline?.text = elapsedTimeString
-    }
-    override fun onVpnServiceStarted() {
-        val vpnIntent = Intent(requireContext(), VpnServices::class.java)
-        ContextCompat.startForegroundService(requireContext(), vpnIntent)
-        isVpnStarted = true
-
-        val service = vpnIntent.component?.className
-        if (service == VpnServices::class.java.name) {
-            val vpnService = vpnIntent as? VpnServices
-
-            // Start the VPN service first
-            vpnService?.startVpn()
-
-            // Set the callback
-            vpnService?.setVpnServiceCallback(this, this)
+    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                intent.getStringExtra("state")?.let { updateUI(it) }
+                Log.v("CHECKSTATE", intent.getStringExtra("state")!!)
+                if (isFirst) {
+                    if (getContext()?.let { activeServer.getSavedServer(it)?.getCountry1() } != null) {
+                        selectedCountry = getContext()?.let { activeServer.getSavedServer(it) }
+                        getContext()?.let {
+                            imgFlag?.let { it1 ->
+                                Glide.with(it)
+                                    .load(selectedCountry?.getFlagUrl1())
+                                    .into(it1)
+                            }
+                        }
+                        flagName?.setText(selectedCountry?.getCountry1())
+                    }
+                    isFirst = false
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            try {
+                var duration = intent.getStringExtra("duration")
+                var lastPacketReceive = intent.getStringExtra("lastPacketReceive")
+                var byteIn = intent.getStringExtra("byteIn")
+                var byteOut = intent.getStringExtra("byteOut")
+                if (duration == null) duration = "00:00:00"
+                if (lastPacketReceive == null) lastPacketReceive = "0"
+                if (byteIn == null) byteIn = " "
+                if (byteOut == null) byteOut = " "
+                updateConnectionStatus(duration, lastPacketReceive, byteIn, byteOut)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
+    open fun updateConnectionStatus(
+        duration: String?,
+        lastPacketReceive: String?,
+        byteIn: String,
+        byteOut: String
+    ) {
+        val byteinKb = byteIn.split("-").toTypedArray()[1]
+        val byteoutKb = byteOut.split("-").toTypedArray()[1]
 
-
-
-    override fun onVpnServiceStopped() {
-        val vpnIntent = Intent(requireContext(), VpnServices::class.java)
-        requireContext().stopService(vpnIntent)
-
-        val notificationManager =
-            requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(VpnServices.NOTIFICATION_ID)
-        isVpnStarted = false
+        textDownloading!!.text = byteinKb
+        textUploading!!.text = byteoutKb
+        timerTextView!!.text = duration
     }
 }

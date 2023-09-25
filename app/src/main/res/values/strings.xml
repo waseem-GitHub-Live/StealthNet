@@ -41,6 +41,14 @@
     <string name="MBps">MBp/s</string>
     <string name="plus99">plus99</string>
     <string name="dash">dash</string>
+    <string name="connected">Connected</string>
+    <string name="name_app">StealthNet</string>
+    <string name="auth">Authenticating</string>
+    <string name="wait">Wait</string>
+    <string name="recon">Reconnecting</string>
+    <string name="connecting">Loading.....</string>
+    <string name="assign_ip">Ip Loading..</string>
+    <string name="config">Configartion</string>
 
 
 </resources>

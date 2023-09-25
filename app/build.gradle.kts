@@ -80,4 +80,12 @@ dependencies {
     implementation ("com.github.oneconnectapi:OneConnectLib:v1.0.9")
 
     implementation ("com.intuit.sdp:sdp-android:1.0.5")
+//
+//    implementation ("com.github.GrenderG:Toasty:1.2.5")
+
+    implementation ("com.github.bumptech.glide:glide:4.10.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.9.0")
+
+
+    implementation ("com.android.volley:volley:1.1.1")
 }

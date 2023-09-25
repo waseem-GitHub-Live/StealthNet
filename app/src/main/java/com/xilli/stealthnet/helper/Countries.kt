@@ -9,8 +9,9 @@ class Countries : Parcelable {
     var ovpn: String? = null
     var ovpnUserName: String? = null
     var ovpnUserPassword: String? = null
-    var signal: Int = 0 // Add signal property
-    var crown: Int = 0 // Add crown property
+    var signal: Int = 0
+    var crown: Int = 0
+    var radiobutton: Boolean = false
 
     constructor() {}
 
@@ -42,7 +43,21 @@ class Countries : Parcelable {
     override fun describeContents(): Int {
         return 0
     }
-
+    fun getCountry1(): String? {
+        return country
+    }
+    fun getFlagUrl1(): String? {
+        return flagUrl
+    }
+    fun getOvpnUserName1(): String? {
+        return ovpnUserName
+    }
+    fun getOvpnUserPassword1(): String? {
+        return ovpnUserPassword
+    }
+    fun getOvpn1(): String? {
+        return ovpn
+    }
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(country)
         dest.writeString(flagUrl)

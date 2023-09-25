@@ -11,25 +11,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.helper.Countries
+import com.xilli.stealthnet.ui.ServerListFragment
 
 class SearchView_Premium_Adapter(
-    private val context: Context,
     private val dataList: List<Countries>
 ) : RecyclerView.Adapter<SearchView_Premium_Adapter.ViewHolder>() {
 
-    private var onItemClickListener: ((Int) -> Unit)? = null
+    private var onItemClickListener: OnItemClickListener?=null
     private var selectedPosition: Int = RecyclerView.NO_POSITION
     var datalist = ArrayList<Countries>()
+
     fun setSelectedPosition(position: Int) {
         selectedPosition = position
     }
-    fun setData(servers: List<Countries?>) {
-        datalist.clear()
-        datalist.addAll(servers.filterNotNull()) // Filter out null elements if any
-        notifyDataSetChanged()
-        selectedPosition = RecyclerView.NO_POSITION
-    }
-    fun setOnItemClickListener(listener: (Int) -> Unit) {
+    fun setOnItemClickListener(listener: OnItemClickListener) {
         onItemClickListener = listener
     }
 
@@ -37,11 +32,14 @@ class SearchView_Premium_Adapter(
         selectedPosition = RecyclerView.NO_POSITION
         notifyDataSetChanged()
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_premier_server, parent, false)
         return ViewHolder(view)
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(country: Countries,position: Int)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -59,9 +57,11 @@ class SearchView_Premium_Adapter(
         )
 
         holder.constraintLayout.setOnClickListener {
-            onItemClickListener?.invoke(position)
+            onItemClickListener?.onItemClick(data,position) // Call onItemClick with the selected data
         }
     }
+
+
 
     override fun getItemCount(): Int {
         return dataList.size
