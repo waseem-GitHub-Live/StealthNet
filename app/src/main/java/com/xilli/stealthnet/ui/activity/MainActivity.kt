@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import com.onesignal.OneSignal
 import com.xilli.stealthnet.R
+import com.xilli.stealthnet.helper.Utility
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -34,5 +35,6 @@ class MainActivity : AppCompatActivity() {
             // Navigate to the HomeFragment
             navController.navigate(R.id.homeFragment)
         }
+        Utility.initialize(this)
     }
 }

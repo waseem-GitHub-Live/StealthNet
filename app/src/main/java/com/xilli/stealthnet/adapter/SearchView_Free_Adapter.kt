@@ -3,6 +3,7 @@ package com.xilli.stealthnet.adapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,9 +56,13 @@ class SearchView_Free_Adapter( private val dataList: List<Countries>,private val
             val bundle = Bundle()
             bundle.putParcelable("c", data)
             bundle.putString("type", HomeFragment.type)
+            bundle.putString("countryName", data.getCountry1())
+            bundle.putString("flagUrl", data.getFlagUrl1())
 
             val navController = fragment.findNavController()
             navController.navigate(R.id.homeFragment, bundle)
+            Log.d("DEBUGFree", "Country: ${data.toString()}, Type: ${HomeFragment.type}")
+
         }
     }
 

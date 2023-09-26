@@ -2,6 +2,7 @@ package com.xilli.stealthnet.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,20 +65,17 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
     private fun setupFreeRecyclerView() {
         recyclerView = binding?.recyclerview2 ?: return
         val freeserver = loadServers()
-
         adapterFREE = SearchView_Free_Adapter( freeserver, this)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapterFREE
-
         adapterFREE.setOnItemClickListener { position ->
             adapterFREE.setSelectedPosition(position)
             adapterPREMIUM.resetSelection()
-
             adapterFREE.notifyDataSetChanged()
             adapterPREMIUM.notifyDataSetChanged()
+            binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
+            binding?.radio?.isChecked = false
         }
-
-
         loadServers()
     }
 
@@ -95,22 +93,11 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
             adapterFREE.resetSelection()
             adapterFREE.notifyDataSetChanged()
             isBackgroundChanged = !isBackgroundChanged
-            updateBackgroundState()
+
             binding?.radio?.isChecked = !binding?.radio?.isChecked!!
-        }
-
-    }
-    fun DataItemPremium.toCountries(): Countries {
-        return Countries(this.title, this.flagimageUrl.toString(), this.IPdescription)
-    }
-
-
-    private fun updateBackgroundState() {
-        if (isBackgroundChanged) {
             binding?.constraintLayout2?.setBackgroundResource(R.drawable.selector_background)
-        } else {
-            binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
         }
+
     }
     private fun loadServers(): List<Countries> {
         val servers = ArrayList<Countries>()
@@ -160,13 +147,20 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
             val bundle = Bundle()
             bundle.putParcelable("c", country)
             bundle.putString("type", HomeFragment.type)
-            fragment?.findNavController()?.navigate(R.id.homeFragment, bundle)
+            bundle.putString("countryName", country.getCountry1())
+            bundle.putString("flagUrl", country.getFlagUrl1())
+            findNavController().navigate(R.id.homeFragment, bundle)
 //            } else {
 //                unblockServer()
 //            }
+
+
         adapterPREMIUM.setSelectedPosition(position)
         adapterFREE.resetSelection()
         adapterPREMIUM.notifyDataSetChanged()
         adapterFREE.notifyDataSetChanged()
+        binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
+
+        binding?.radio?.isChecked = false
     }
 }

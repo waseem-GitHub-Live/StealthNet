@@ -103,11 +103,10 @@
                     android:id="@+id/connection_report_ip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/urbanist_regular_400"
                     android:text="51 . 178 . 82 . 56"
                     android:textColor="#BCBCBC"
-                    android:fontFamily="@font/urbanist_regular_400"
                     android:textSize="13sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                     app:layout_constraintStart_toEndOf="@+id/imageView6"
                     app:layout_constraintTop_toBottomOf="@+id/textView9" />
 

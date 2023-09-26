@@ -64,6 +64,8 @@ class Countries : Parcelable {
         dest.writeString(ovpn)
         dest.writeString(ovpnUserName)
         dest.writeString(ovpnUserPassword)
+        dest.writeInt(signal)
+        dest.writeInt(crown)
     }
 
     companion object CREATOR : Parcelable.Creator<Countries> {

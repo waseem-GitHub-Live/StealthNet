@@ -30,6 +30,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieDrawable
@@ -37,12 +38,17 @@ import com.bumptech.glide.Glide
 import com.xilli.stealthnet.R
 import com.xilli.stealthnet.databinding.FragmentHomeBinding
 import com.xilli.stealthnet.helper.ActiveServer
+import com.xilli.stealthnet.helper.ContentActivity
 import com.xilli.stealthnet.helper.Countries
 import com.xilli.stealthnet.helper.Utility
 import com.xilli.stealthnet.helper.Utility.textDownloading
 import com.xilli.stealthnet.helper.Utility.textUploading
 import com.xilli.stealthnet.helper.Utility.updateUI
 import com.xilli.stealthnet.ui.viewmodels.VpnViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import top.oneconnectapi.app.OpenVpnApi
 import top.oneconnectapi.app.core.OpenVPNThread
 
@@ -55,12 +61,13 @@ class HomeFragment : Fragment(){
     private var connectionStateTextView: TextView? = null
     private var timerTextView: TextView? = null
     private var isButtonClicked = true
-    private val clickHandler = Handler()
     private var isNavigationInProgress = false
+    private val VPN_PERMISSION_REQUEST_CODE = 123
     companion object {
         var type = ""
         val activeServer = ActiveServer()
         var STATUS = "DISCONNECTED"
+
     }
     @JvmField
     var flagName: TextView? = null
@@ -89,7 +96,15 @@ class HomeFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         clicklistner()
         backexitclick()
+        requestVpnPermission()
+        val countryName = arguments?.getString("countryName")
+        val flagUrl = arguments?.getString("flagUrl")
+
+        // Set data in the object
+        Utility.countryName = countryName
+        Utility.flagUrl = flagUrl
     }
+
 
     private fun backexitclick() {
         view?.isFocusableInTouchMode = true
@@ -129,16 +144,6 @@ class HomeFragment : Fragment(){
         alertDialog.show()
     }
 
-
-//    private fun alertdialogexit(dialogInterface: DialogInterface) {
-//        val alertSheetDialog = dialogInterface as AlertDialog
-//        val alertdialog = alertSheetDialog.findViewById<View>(
-//            com.google.android.material.R.id.alertTitle
-//        )
-//            ?: return
-//        alertdialog.setBackgroundColor(Color.TRANSPARENT)
-//    }
-
     private fun loadLottieAnimation() {
         binding?.lottieAnimationView?.setAnimation(R.raw.loading_animation)
         binding?.lottieAnimationView2?.setAnimation(R.raw.backview)
@@ -159,21 +164,26 @@ class HomeFragment : Fragment(){
             drawerLayout.openDrawer(GravityCompat.START)
         }
         binding?.imageView4?.setOnClickListener {
-            isButtonClicked = false
-            btnConnectDisconnect()
-            loadLottieAnimation()
-            if (selectedCountry != null) {
-                binding?.power?.visibility = View.GONE
-                binding?.lottieAnimationView?.visibility = View.VISIBLE
-                binding?.connect?.text = "Connecting"
-
-                Handler().postDelayed({
-                    val action = HomeFragmentDirections.actionHomeFragmentToRateScreenFragment()
-                    findNavController().navigate(action)
-                    isNavigationInProgress = true
-                    isButtonClicked = true
-                    isNavigationInProgress = false
-                }, 3000)
+            if (hasVpnPermission()) {
+                isButtonClicked = false
+                btnConnectDisconnect()
+                loadLottieAnimation()
+                if (selectedCountry != null) {
+                    binding?.power?.visibility = View.GONE
+                    binding?.lottieAnimationView?.visibility = View.VISIBLE
+                    binding?.connect?.text = "Connecting"
+                    startVpnnew()
+                    Handler().postDelayed({
+                        val action = HomeFragmentDirections.actionHomeFragmentToRateScreenFragment()
+                        findNavController().navigate(action)
+                        isNavigationInProgress = true
+                        isButtonClicked = true
+                        isNavigationInProgress = false
+                    }, 3000)
+                }
+            } else {
+                // Permission is not granted, request it
+                requestVpnPermission()
             }
         }
 
@@ -222,11 +232,11 @@ class HomeFragment : Fragment(){
 
 
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+
     override fun onStart() {
         super.onStart()
-        LocalBroadcastManager.getInstance(requireContext())
-            .registerReceiver(broadcastReceiver, IntentFilter("connectionState"))
+//        LocalBroadcastManager.getInstance(requireContext())
+//            .registerReceiver(broadcastReceiver, IntentFilter("connectionState"))
         selectedCountry = arguments?.getParcelable("c") as? Countries
         type = arguments?.getString("type").toString()
 
@@ -326,7 +336,6 @@ class HomeFragment : Fragment(){
         try {
             // Log the value of selectedCountry
             Log.d("StartVPN", "selectedCountry: $selectedCountry")
-
             selectedCountry?.let { activeServer.saveServer(it, requireContext()) }
             OpenVpnApi.startVpn(
                 requireContext(),
@@ -337,21 +346,46 @@ class HomeFragment : Fragment(){
             )
         } catch (e: RemoteException) {
             e.printStackTrace()
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
 
+
+    private fun hasVpnPermission(): Boolean {
+        val intent = VpnService.prepare(requireContext())
+        return intent == null
+    }
+
+    private fun requestVpnPermission() {
+        val intent = VpnService.prepare(requireContext())
+        if (intent != null) {
+            startActivityForResult(intent, VPN_PERMISSION_REQUEST_CODE)
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 11) {
-            Toast.makeText(context, "Start Downloand", Toast.LENGTH_SHORT).show()
-            if (resultCode != RESULT_OK) {
-                Log.d("Update", "Update failed$resultCode")
+        if (requestCode == VPN_PERMISSION_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                isButtonClicked = false
+                if (selectedCountry != null) {
+                    binding?.power?.visibility = View.GONE
+                    binding?.lottieAnimationView?.visibility = View.VISIBLE
+                    binding?.connect?.text = "Connecting"
+                  lifecycleScope.launch {
+                      isNavigationInProgress = true
+                      isButtonClicked = true
+                      isNavigationInProgress = false
+                      startVpnnew()
+                       delay(3000)
+                       val action = HomeFragmentDirections.actionHomeFragmentToRateScreenFragment()
+                       findNavController().navigate(action)
+                   }
+                }
+            } else {
+                // Permission denied
+                Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
-        }
-        if (resultCode == RESULT_OK) {
-            startVpnnew()
-        } else {
-            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
     }
     private fun checkSelectedCountry() {
@@ -404,6 +438,8 @@ class HomeFragment : Fragment(){
             e.printStackTrace()
         }
     }
+
+
     private fun btnConnectDisconnect() {
         if (STATUS == "DISCONNECTED") {
             if (Utility.isOnline(requireContext())) {
@@ -413,7 +449,9 @@ class HomeFragment : Fragment(){
                 Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
             }
         } else {
-            disconnectAlert()
+            Toast.makeText(context, "Good...", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 }

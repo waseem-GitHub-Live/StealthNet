@@ -32,6 +32,9 @@ object Utility {
     var rcvFree: RecyclerView? = null
     var footer: RelativeLayout? = null
     private var appContext: Context? = null
+    var countryName: String? = null
+    var flagUrl: String? = null
+
     fun isOnline(context: Context): Boolean {
         try {
             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -42,25 +45,27 @@ object Utility {
             return false
         }
     }
-     fun showIP() {
+
+    fun showIP(textView: TextView) {
         val queue = Volley.newRequestQueue(appContext)
         val urlip = "https://checkip.amazonaws.com/"
 
         val stringRequest = StringRequest(
             Request.Method.GET, urlip,
             Response.Listener<String> { response ->
-                tvIpAddress?.text = response
+                textView.text = response
             },
             Response.ErrorListener { error ->
-                tvIpAddress?.text = appContext?.getString(R.string.name_app)
+                textView.text = appContext?.getString(R.string.name_app)
             }
         )
 
         queue.add(stringRequest)
     }
-
     fun initialize(context: Context) {
         appContext = context.applicationContext
+        val imageViewId = R.id.imageView4
+        connectBtnTextView?.setId(imageViewId)
     }
     fun showToast(message: String) {
         appContext?.let {
@@ -77,7 +82,7 @@ object Utility {
                 connectBtnTextView?.isEnabled = true
                 connectionStateTextView?.setText(R.string.connected)
                 timerTextView?.visibility = View.GONE
-                showIP()
+                tvIpAddress?.let { showIP(it) }
                 connectBtnTextView?.visibility = View.VISIBLE
                 tvConnectionStatus?.text = "Selected"
                 showToast("VPN Remains Connected")
@@ -135,15 +140,14 @@ object Utility {
             "NONETWORK" -> {
                 STATUS = "DISCONNECTED"
                 tvConnectionStatus?.text = "Not Selected"
-                showIP()
-
+                tvIpAddress?.let { showIP(it) }
                 tvConnectionStatus?.text = "Not Selected"
             }
             "DISCONNECTED" -> {
                 STATUS = "DISCONNECTED"
                 tvConnectionStatus?.text = "Not Selected"
                 timerTextView?.visibility = View.INVISIBLE
-                showIP()
+                tvIpAddress?.let { showIP(it) }
                 tvConnectionStatus?.text = "Not Selected"
             }
         }

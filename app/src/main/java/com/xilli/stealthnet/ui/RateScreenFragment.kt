@@ -1,23 +1,32 @@
 package com.xilli.stealthnet.ui
 
 import android.app.AlertDialog
+import android.app.usage.NetworkStats
+import android.app.usage.NetworkStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
 import android.net.TrafficStats
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.os.RemoteException
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -30,18 +39,26 @@ import com.xilli.stealthnet.R
 import com.xilli.stealthnet.databinding.FragmentRateScreenBinding
 import com.xilli.stealthnet.helper.ActiveServer
 import com.xilli.stealthnet.helper.Countries
+import com.xilli.stealthnet.helper.Utility
+import com.xilli.stealthnet.helper.Utility.showIP
 import com.xilli.stealthnet.helper.Utility.textDownloading
 import com.xilli.stealthnet.helper.Utility.textUploading
 import com.xilli.stealthnet.helper.Utility.timerTextView
 import com.xilli.stealthnet.helper.Utility.updateUI
 import com.xilli.stealthnet.helper.VpnServiceCallback
+import com.xilli.stealthnet.ui.viewmodels.SharedViewmodel
 import com.xilli.stealthnet.ui.viewmodels.VpnViewModel
+import top.oneconnectapi.app.core.OpenVPNThread
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 
 class RateScreenFragment : Fragment(){
 
     private var binding: FragmentRateScreenBinding? = null
     private val mHandler = Handler()
+    private var startTimeMillis: Long = 0
     private var mStartRX: Long = 0
     private var mStartTX: Long = 0
     private var backPressedOnce = false
@@ -50,10 +67,12 @@ class RateScreenFragment : Fragment(){
     private var countdownValue = 4
     private var countDownTimer: CountDownTimer? = null
     private var vpnCallback: VpnServiceCallback? = null
-    private lateinit var viewModel: VpnViewModel
+    private var viewModel: SharedViewmodel?=null
     private val handler = Handler(Looper.getMainLooper())
     var selectedCountry: Countries? = null
     private var isFirst = true
+    val countryName = Utility.countryName
+    val flagUrl = Utility.flagUrl
     companion object {
         var type = ""
         val activeServer = ActiveServer()
@@ -69,7 +88,7 @@ class RateScreenFragment : Fragment(){
     ): View? {
 
         binding = FragmentRateScreenBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity())[VpnViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[SharedViewmodel::class.java]
         binding?.lifecycleOwner = viewLifecycleOwner
         return binding?.root
     }
@@ -79,25 +98,42 @@ class RateScreenFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val storedStartTime = sharedPreferences.getLong("startTime", 0)
-
-        // If startTime is not 0, update the startTime
-//        val vpnService = (requireActivity().application as MyApplication).vpnService
-
-
         clicklistner()
         setupBackPressedCallback()
         startRunnable()
         updateTrafficStats()
-        val filter = IntentFilter("com.xilli.stealthnet.elapsedTime")
-        requireContext().registerReceiver(elapsedTimeReceiver, filter)
+        datasheet()
+        binding?.vpnIp?.let { showIP(it) }
+        terraformed()
+
     }
 
-    private val elapsedTimeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == "com.xilli.stealthnet.elapsedTime") {
-                val elapsedTime = intent.getStringExtra("elapsedTime")
-                binding?.timeline?.text = elapsedTime
+    private fun terraformed() {
+        startTimeMillis = System.currentTimeMillis()
+        mHandler.post(object : Runnable {
+            override fun run() {
+                val elapsedTimeMillis = System.currentTimeMillis() - startTimeMillis
+                val elapsedTimeFormatted = formatElapsedTime(elapsedTimeMillis)
+                binding?.timeline?.text = elapsedTimeFormatted
+                mHandler.postDelayed(this, 1000)
             }
+        })
+    }
+
+    private fun formatElapsedTime(elapsedTimeMillis: Long): String {
+        val seconds = (elapsedTimeMillis / 1000) % 60
+        val minutes = (elapsedTimeMillis / (1000 * 60)) % 60
+        val hours = (elapsedTimeMillis / (1000 * 60 * 60)) % 24
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+    private fun datasheet() {
+        if (countryName != null && flagUrl != null) {
+            binding?.flagimageView?.let {
+                Glide.with(this)
+                    .load(flagUrl)
+                    .into(it)
+            }
+            binding?.flagName?.text = countryName
         }
     }
     override fun onResume() {
@@ -107,67 +143,96 @@ class RateScreenFragment : Fragment(){
 //        vpnService?.updateStartTime(System.currentTimeMillis())
     }
 
-
     private fun startRunnable() {
         mRunnable.run()
     }
     private fun updateTrafficStats() {
+        val totalDataUsage = calculateTotalDataUsage()
+        binding?.datausage?.text = totalDataUsage
+        viewModel?.totalDataUsage1 = totalDataUsage
+
         val resetDownload = TrafficStats.getTotalRxBytes()
-
         val rxBytes = TrafficStats.getTotalRxBytes() - mStartRX
-
-        binding?.textView4?.text = rxBytes.toString()
-        if (rxBytes >= 1024) {
-            val rxKb = rxBytes / 1024
-            binding?.textView4?.text = "$rxKb KBs"
-            if (rxKb >= 1024) {
-                val rxMB = rxKb / 1024
-                binding?.textView4?.text = "$rxMB MBs"
-                if (rxMB >= 1024) {
-                    val rxGB = rxMB / 1024
-                    binding?.textView4?.text = "$rxGB GBs"
-
-                }
-            }
-        }
-
+        val formattedRx = formatBytes(rxBytes)
+        binding?.textView4?.text = formattedRx
         mStartRX = resetDownload
 
         val resetUpload = TrafficStats.getTotalTxBytes()
-
         val txBytes = TrafficStats.getTotalTxBytes() - mStartTX
-
-        binding?.uploaddata?.text = txBytes.toString()
-        if (txBytes >= 1024) {
-            val txKb = txBytes / 1024
-            binding?.uploaddata?.text = "$txKb KBs"
-            if (txKb >= 1024) {
-                val txMB = txKb / 1024
-                binding?.uploaddata?.text = "$txMB MBs"
-                if (txMB >= 1024) {
-                    val txGB = txMB / 1024
-                    binding?.uploaddata?.text = "$txGB GBs"
-                }
-            }
-        }
-
+        val formattedTx = formatBytes(txBytes)
+        binding?.uploaddata?.text = formattedTx
         mStartTX = resetUpload
+
+        val avgRxSpeed = calculateAverageSpeed(mStartRX, rxBytes)
+        val avgTxSpeed = calculateAverageSpeed(mStartTX, txBytes)
+
+        // Store the averages in a shared location (e.g., ViewModel)
+        viewModel?.setAverageRxSpeed(avgRxSpeed)
+        viewModel?.setAverageTxSpeed(avgTxSpeed)
     }
 
+    // Function to format bytes into a user-friendly string
+    private fun formatBytes(bytes: Long): String {
+        val kilo = 1024
+        val mega = kilo * kilo
+        val giga = mega * kilo
+
+        return when {
+            bytes < kilo -> "$bytes B"
+            bytes < mega -> String.format("%.2f KB", bytes.toDouble() / kilo)
+            bytes < giga -> String.format("%.2f MB", bytes.toDouble() / mega)
+            else -> String.format("%.2f GB", bytes.toDouble() / giga)
+        }
+    }
+    private fun calculateAverageSpeed(startBytes: Long, currentBytes: Long): String {
+        val bytesTransferred = abs(currentBytes - startBytes) // Absolute difference
+
+        return when {
+            bytesTransferred < 1024 -> "$bytesTransferred B/s"
+            bytesTransferred < 1024 * 1024 -> "${bytesTransferred / 1024} KB/s"
+            bytesTransferred < 1024 * 1024 * 1024 -> "${bytesTransferred / (1024 * 1024)} MB/s"
+            else -> "${bytesTransferred / (1024 * 1024 * 1024)} GB/s"
+        }
+    }
+
+
+    private fun calculateTotalDataUsage(): String {
+        val totalRxBytes = TrafficStats.getTotalRxBytes()
+        val totalTxBytes = TrafficStats.getTotalTxBytes()
+
+        val totalBytes = totalRxBytes + totalTxBytes
+        return formatDataUsage(totalBytes)
+    }
+
+    private fun formatDataUsage(bytes: Long): String {
+        val kilobytes = bytes / 1024
+        val megabytes = kilobytes / 1024
+        val gigabytes = megabytes / 1024
+
+        return when {
+            gigabytes > 0 -> "$gigabytes GBs"
+            megabytes > 0 -> "$megabytes MBs"
+            kilobytes > 0 -> "$kilobytes KBs"
+            else -> "$bytes Bytes"
+        }
+    }
     private fun setupBackPressedCallback() {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
+            private var isDisconnecting = false
+
             override fun handleOnBackPressed() {
-                if (!backPressedOnce) {
+                if (!backPressedOnce && !isDisconnecting) {
                     backPressedOnce = true
+                    isDisconnecting = true
                     disconnectmethod()
-                } else {
+                } else if (backPressedOnce && !isDisconnecting) {
                     requireActivity().onBackPressed()
+                    disconnectmethod()
                 }
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
     }
-
     private fun alertdialog(dialogInterface: DialogInterface) {
         val alertSheetDialog = dialogInterface as AlertDialog
         val alertdialog = alertSheetDialog.findViewById<View>(
@@ -238,15 +303,17 @@ class RateScreenFragment : Fragment(){
             }
 
             override fun onFinish() {
-                // Countdown complete, navigate or perform your desired action
                 disconnectTextView.setOnClickListener {
-                    val action = RateScreenFragmentDirections.actionRateScreenFragmentToReportScreenFragment()
-                    findNavController().navigate(action)
+                    val bundle = Bundle()
+                    bundle.putString("elapsedTime", binding?.timeline?.text.toString())
+                    findNavController().navigate(R.id.reportScreenFragment, bundle)
+
+//                    val action = RateScreenFragmentDirections.actionRateScreenFragmentToReportScreenFragment()
+//                    findNavController().navigate(action)
 //                    stopVpn()
+                    disconnectFromVpn()
                     dialog.dismiss()
                 }
-
-                // Restore original background color and text color
                 disconnectTextView.background = originalDisconnectBackground
                 disconnectTextView.setTextColor(originalDisconnectTextColor)
                 disconnectTextView.text = getString(R.string.disconnect_timer_initial)
@@ -255,7 +322,15 @@ class RateScreenFragment : Fragment(){
 
         countDownTimer?.start()
     }
-
+    fun disconnectFromVpn() {
+        try {
+            OpenVPNThread.stop()
+            updateUI("DISCONNECTED")
+            Toast.makeText(context, "vpn Disconnected", Toast.LENGTH_SHORT).show()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
     private val mRunnable: Runnable = object : Runnable {
         override fun run() {
             updateTrafficStats()
@@ -264,7 +339,7 @@ class RateScreenFragment : Fragment(){
     }
     override fun onDestroyView() {
         countDownTimer?.cancel()
-        requireContext().unregisterReceiver(elapsedTimeReceiver)
+//        requireContext().unregisterReceiver(elapsedTimeReceiver)
         mHandler.removeCallbacks(mRunnable)
         onBackPressedCallback.isEnabled = false
         onBackPressedCallback.remove()

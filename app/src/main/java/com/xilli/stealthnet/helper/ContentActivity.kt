@@ -35,9 +35,6 @@ abstract class ContentActivity : AppCompatActivity() {
     private var loadingAd: Boolean? = false
     var frameLayout: RelativeLayout? = null
 
-    @JvmField
-
-
     var progressBarValue = 0
     var handler = Handler(Looper.getMainLooper())
     private val customHandler = Handler(Looper.getMainLooper())
@@ -97,7 +94,7 @@ abstract class ContentActivity : AppCompatActivity() {
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE)
 
         tvIpAddress = findViewById<TextView>(R.id.vpn_ip)
-        showIP()
+        Utility.tvIpAddress?.let { showIP(it) }
 
 
         ivVpnDetail?.setOnClickListener {
@@ -122,7 +119,7 @@ abstract class ContentActivity : AppCompatActivity() {
             }
         }
     }
-    protected fun disconnectAlert() {
+     private fun disconnectAlert() {
         val builder = androidx.appcompat.app.AlertDialog.Builder(applicationContext)
         builder.setTitle("Do you want to disconnect?")
         builder.setPositiveButton(
@@ -151,7 +148,7 @@ abstract class ContentActivity : AppCompatActivity() {
                 Utility.connectBtnTextView!!.isEnabled = true
                 Utility.connectionStateTextView!!.setText(R.string.connected)
                 Utility.timerTextView!!.visibility = View.GONE
-                showIP()
+                Utility.tvIpAddress?.let { showIP(it) }
                 Utility.connectBtnTextView!!.visibility = View.VISIBLE
                 Utility.tvConnectionStatus!!.text = "Selected"
                 Utility.showToast("VPN Remains Connected")
@@ -209,7 +206,7 @@ abstract class ContentActivity : AppCompatActivity() {
             "NONETWORK" -> {
                 STATUS = "DISCONNECTED"
                 Utility.tvConnectionStatus!!.text = "Not Selected"
-                showIP()
+                Utility.tvIpAddress?.let { showIP(it) }
 
                 Utility.tvConnectionStatus!!.text = "Not Selected"
             }
@@ -217,11 +214,11 @@ abstract class ContentActivity : AppCompatActivity() {
                 STATUS = "DISCONNECTED"
                 Utility.tvConnectionStatus!!.text = "Not Selected"
                 Utility.timerTextView!!.visibility = View.INVISIBLE
-                showIP()
+                Utility.tvIpAddress?.let { showIP(it) }
                 Utility.tvConnectionStatus!!.text = "Not Selected"
             }
         }
     }
-    protected abstract fun disconnectFromVpn()
-    protected abstract fun checkSelectedCountry()
+     abstract fun disconnectFromVpn()
+     abstract fun checkSelectedCountry()
 }

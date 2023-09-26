@@ -69,7 +69,11 @@
         android:id="@+id/serverListFragment"
         android:name="com.xilli.stealthnet.ui.ServerListFragment"
         android:label="ServerListFragment"
-        tools:layout="@layout/fragment_server_list"/>
+        tools:layout="@layout/fragment_server_list">
+        <action
+            android:id="@+id/action_serverListFragment_to_rateScreenFragment"
+            app:destination="@id/rateScreenFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.xilli.stealthnet.ui.menu.SettingFragment"
