@@ -66,6 +66,8 @@ object Utility {
         appContext = context.applicationContext
         val imageViewId = R.id.imageView4
         connectBtnTextView?.setId(imageViewId)
+        val textview = R.id.connect
+        connectionStateTextView?.setId(textview)
     }
     fun showToast(message: String) {
         appContext?.let {
@@ -93,6 +95,7 @@ object Utility {
                 connectionStateTextView?.setText(R.string.auth)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
+                showToast("VPN AUTHENTICATION")
             }
             "WAIT" -> {
                 STATUS = "WAITING"
@@ -100,6 +103,7 @@ object Utility {
                 connectionStateTextView?.setText(R.string.wait)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
+                showToast("VPN WAITING")
             }
             "RECONNECTING" -> {
                 STATUS = "RECONNECTING"
@@ -107,14 +111,15 @@ object Utility {
                 connectionStateTextView?.setText(R.string.recon)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
+                showToast("VPN RECONNECTING")
             }
             "LOAD" -> {
                 STATUS = "LOAD"
                 connectBtnTextView?.visibility = View.VISIBLE
-
                 connectionStateTextView?.setText(R.string.connecting)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
+                showToast("VPN LOAD")
             }
             "ASSIGN_IP" -> {
                 STATUS = "LOAD"
@@ -123,6 +128,7 @@ object Utility {
                 connectionStateTextView?.setText(R.string.assign_ip)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
+                showToast("VPN ASSIGN_IP")
             }
             "GET_CONFIG" -> {
                 STATUS = "LOAD"
@@ -131,17 +137,20 @@ object Utility {
                 connectionStateTextView?.setText(R.string.config)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
+                showToast("VPN GET_CONFIG")
             }
             "USERPAUSE" -> {
                 STATUS = "DISCONNECTED"
                 tvConnectionStatus?.text = "Not Selected"
                 tvConnectionStatus?.text = "Not Selected"
+                showToast("VPN DISCONNECTED USERPAUSE")
             }
             "NONETWORK" -> {
                 STATUS = "DISCONNECTED"
                 tvConnectionStatus?.text = "Not Selected"
                 tvIpAddress?.let { showIP(it) }
                 tvConnectionStatus?.text = "Not Selected"
+                showToast("VPN DISCONNECTED NONETWORK")
             }
             "DISCONNECTED" -> {
                 STATUS = "DISCONNECTED"
@@ -149,8 +158,8 @@ object Utility {
                 timerTextView?.visibility = View.INVISIBLE
                 tvIpAddress?.let { showIP(it) }
                 tvConnectionStatus?.text = "Not Selected"
+                showToast("VPN DISCONNECTED")
             }
         }
     }
-
 }

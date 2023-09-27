@@ -166,12 +166,10 @@ class RateScreenFragment : Fragment(){
         val avgRxSpeed = calculateAverageSpeed(mStartRX, rxBytes)
         val avgTxSpeed = calculateAverageSpeed(mStartTX, txBytes)
 
-        // Store the averages in a shared location (e.g., ViewModel)
         viewModel?.setAverageRxSpeed(avgRxSpeed)
         viewModel?.setAverageTxSpeed(avgTxSpeed)
     }
 
-    // Function to format bytes into a user-friendly string
     private fun formatBytes(bytes: Long): String {
         val kilo = 1024
         val mega = kilo * kilo
@@ -185,7 +183,7 @@ class RateScreenFragment : Fragment(){
         }
     }
     private fun calculateAverageSpeed(startBytes: Long, currentBytes: Long): String {
-        val bytesTransferred = abs(currentBytes - startBytes) // Absolute difference
+        val bytesTransferred = abs(currentBytes - startBytes)
 
         return when {
             bytesTransferred < 1024 -> "$bytesTransferred B/s"
@@ -307,10 +305,6 @@ class RateScreenFragment : Fragment(){
                     val bundle = Bundle()
                     bundle.putString("elapsedTime", binding?.timeline?.text.toString())
                     findNavController().navigate(R.id.reportScreenFragment, bundle)
-
-//                    val action = RateScreenFragmentDirections.actionRateScreenFragmentToReportScreenFragment()
-//                    findNavController().navigate(action)
-//                    stopVpn()
                     disconnectFromVpn()
                     dialog.dismiss()
                 }
@@ -339,7 +333,6 @@ class RateScreenFragment : Fragment(){
     }
     override fun onDestroyView() {
         countDownTimer?.cancel()
-//        requireContext().unregisterReceiver(elapsedTimeReceiver)
         mHandler.removeCallbacks(mRunnable)
         onBackPressedCallback.isEnabled = false
         onBackPressedCallback.remove()
@@ -383,7 +376,7 @@ class RateScreenFragment : Fragment(){
             }
         }
     }
-    open fun updateConnectionStatus(
+    fun updateConnectionStatus(
         duration: String?,
         lastPacketReceive: String?,
         byteIn: String,

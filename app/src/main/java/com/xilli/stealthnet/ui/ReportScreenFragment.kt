@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.xilli.stealthnet.R
 import com.xilli.stealthnet.databinding.FragmentReportScreenBinding
 import com.xilli.stealthnet.helper.Utility
 import com.xilli.stealthnet.ui.viewmodels.SharedViewmodel
@@ -64,6 +66,14 @@ class ReportScreenFragment : Fragment() {
         }
         binding?.connectionagain?.setOnClickListener {
             val action = ReportScreenFragmentDirections.actionReportScreenFragmentToServerListFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            val action = ReportScreenFragmentDirections.actionReportScreenFragmentToHomeFragment()
             findNavController().navigate(action)
         }
     }
