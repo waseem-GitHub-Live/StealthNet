@@ -39,7 +39,7 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentServerListBinding.inflate(inflater, container, false)
-        selectedServer = DataItemPremium("Default Server", "10.0.0.5", R.drawable.flag, R.drawable.ic_signal, R.drawable.ic_green_crown)
+//        selectedServer = DataItemPremium("Default Server", "10.0.0.5", R.drawable.flag, R.drawable.ic_signal, R.drawable.ic_green_crown)
         return binding?.root
     }
 
@@ -48,7 +48,7 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
         setupFreeRecyclerView()
         setupPremiumRecyclerView()
         clicklistner()
-        binding?.constraintLayout2?.performClick()
+//        binding?.constraintLayout2?.performClick()
 
 
     }
@@ -73,8 +73,8 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
             adapterPREMIUM.resetSelection()
             adapterFREE.notifyDataSetChanged()
             adapterPREMIUM.notifyDataSetChanged()
-            binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
-            binding?.radio?.isChecked = false
+//            binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
+//            binding?.radio?.isChecked = false
         }
         loadServers()
     }
@@ -83,20 +83,20 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
         binding?.imageView7?.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding?.constraintLayout2?.setOnClickListener {
-            if (::adapterPREMIUM.isInitialized ){
-                adapterPREMIUM.resetSelection()
-                adapterPREMIUM.notifyDataSetChanged()
-            }
-
-            selectedPosition = RecyclerView.NO_POSITION
-            adapterFREE.resetSelection()
-            adapterFREE.notifyDataSetChanged()
-            isBackgroundChanged = !isBackgroundChanged
-
-            binding?.radio?.isChecked = !binding?.radio?.isChecked!!
-            binding?.constraintLayout2?.setBackgroundResource(R.drawable.selector_background)
-        }
+//        binding?.constraintLayout2?.setOnClickListener {
+//            if (::adapterPREMIUM.isInitialized ){
+//                adapterPREMIUM.resetSelection()
+//                adapterPREMIUM.notifyDataSetChanged()
+//            }
+//
+//            selectedPosition = RecyclerView.NO_POSITION
+//            adapterFREE.resetSelection()
+//            adapterFREE.notifyDataSetChanged()
+//            isBackgroundChanged = !isBackgroundChanged
+//
+//            binding?.radio?.isChecked = !binding?.radio?.isChecked!!
+//            binding?.constraintLayout2?.setBackgroundResource(R.drawable.selector_background)
+//        }
 
     }
     private fun loadServers(): List<Countries> {
@@ -159,8 +159,8 @@ class ServerListFragment : Fragment(),SearchView_Premium_Adapter.OnItemClickList
         adapterFREE.resetSelection()
         adapterPREMIUM.notifyDataSetChanged()
         adapterFREE.notifyDataSetChanged()
-        binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
+//        binding?.constraintLayout2?.setBackgroundResource(R.drawable.background_black_card)
 
-        binding?.radio?.isChecked = false
+//        binding?.radio?.isChecked = false
     }
 }

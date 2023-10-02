@@ -21,11 +21,12 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         binding = ActivitySplashBinding.inflate(layoutInflater)
         runBlocking {
             launch(Dispatchers.IO) {
                 try {
-                    Log.d("MyApp", "Coroutine started") // Log that the coroutine has started
+                    Log.d("MyApp", "Coroutine started")
                     val oneConnect = OneConnect()
                     oneConnect.initialize(this@SplashActivity, "2w0QvmDcWoNfZWTmEukdXSF8JAu4zLka2Br7u1iIvr9UE8Y6lw")
                     val response = oneConnect.fetch(true)
@@ -47,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         binding.lottieAnimationViewsplash.setAnimation(R.raw.loading_animation)
-        installSplashScreen()
+
         binding.lottieAnimationViewsplash.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {
             }

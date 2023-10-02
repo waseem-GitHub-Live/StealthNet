@@ -16,7 +16,8 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.xilli.stealthnet.R
-import com.xilli.stealthnet.ui.HomeFragment.Companion.STATUS
+import java.net.Inet4Address
+import java.net.NetworkInterface
 
 object Utility {
     private const val TAG = "Utility"
@@ -34,7 +35,8 @@ object Utility {
     private var appContext: Context? = null
     var countryName: String? = null
     var flagUrl: String? = null
-
+    private var STATUS: String? = "DISCONNECTED"
+// fun for check online devices
     fun isOnline(context: Context): Boolean {
         try {
             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -45,7 +47,7 @@ object Utility {
             return false
         }
     }
-
+// Ip address method to get from internet
     fun showIP(textView: TextView) {
         val queue = Volley.newRequestQueue(appContext)
         val urlip = "https://checkip.amazonaws.com/"
@@ -55,25 +57,37 @@ object Utility {
             Response.Listener<String> { response ->
                 textView.text = response
             },
-            Response.ErrorListener { error ->
-                textView.text = appContext?.getString(R.string.name_app)
+            Response.ErrorListener { _ ->
+                textView.text = getIpv4HostAddress()
             }
         )
 
         queue.add(stringRequest)
     }
-    fun initialize(context: Context) {
-        appContext = context.applicationContext
-        val imageViewId = R.id.imageView4
-        connectBtnTextView?.setId(imageViewId)
-        val textview = R.id.connect
-        connectionStateTextView?.setId(textview)
+
+    private fun getIpv4HostAddress(): CharSequence? {
+        NetworkInterface.getNetworkInterfaces()?.toList()?.map { networkInterface ->
+            networkInterface.inetAddresses?.toList()?.find {
+                !it.isLoopbackAddress && it is Inet4Address
+            }?.let { return it.hostAddress }
+        }
+        return ""
     }
+
+    fun initialize(context: Context, view: View) {
+        appContext = context.applicationContext
+        connectionStateTextView = view.findViewById(R.id.connect)
+        connectBtnTextView = view.findViewById(R.id.imageView4)
+        tvIpAddress = view.findViewById(R.id.ip)
+    }
+
     fun showToast(message: String) {
         appContext?.let {
             Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
         }
     }
+
+    // it tells the that situation of vpn its connected or not or what whats its doing and upgrade UI
     fun updateUI(status:String) {
 
         when (status) {
@@ -88,6 +102,7 @@ object Utility {
                 connectBtnTextView?.visibility = View.VISIBLE
                 tvConnectionStatus?.text = "Selected"
                 showToast("VPN Remains Connected")
+
             }
             "AUTH" -> {
                 STATUS = "AUTHENTICATION"
@@ -119,7 +134,6 @@ object Utility {
                 connectionStateTextView?.setText(R.string.connecting)
                 connectBtnTextView?.isEnabled = true
                 timerTextView?.visibility = View.GONE
-                showToast("VPN LOAD")
             }
             "ASSIGN_IP" -> {
                 STATUS = "LOAD"
@@ -155,11 +169,9 @@ object Utility {
             "DISCONNECTED" -> {
                 STATUS = "DISCONNECTED"
                 tvConnectionStatus?.text = "Not Selected"
-                timerTextView?.visibility = View.INVISIBLE
                 tvIpAddress?.let { showIP(it) }
-                tvConnectionStatus?.text = "Not Selected"
-                showToast("VPN DISCONNECTED")
             }
         }
     }
+
 }

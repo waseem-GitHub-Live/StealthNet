@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             // Navigate to the HomeFragment
             navController.navigate(R.id.homeFragment)
         }
-        Utility.initialize(this)
+        Utility.initialize(this, findViewById(android.R.id.content))
+
     }
 }

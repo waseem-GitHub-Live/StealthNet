@@ -305,7 +305,7 @@ class RateScreenFragment : Fragment(){
                     val bundle = Bundle()
                     bundle.putString("elapsedTime", binding?.timeline?.text.toString())
                     findNavController().navigate(R.id.reportScreenFragment, bundle)
-                    disconnectFromVpn()
+//                    disconnectFromVpn()
                     dialog.dismiss()
                 }
                 disconnectTextView.background = originalDisconnectBackground
@@ -316,15 +316,15 @@ class RateScreenFragment : Fragment(){
 
         countDownTimer?.start()
     }
-    fun disconnectFromVpn() {
-        try {
-            OpenVPNThread.stop()
-            updateUI("DISCONNECTED")
-            Toast.makeText(context, "vpn Disconnected", Toast.LENGTH_SHORT).show()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
+//    fun disconnectFromVpn() {
+//        try {
+//            OpenVPNThread.stop()
+//            updateUI("DISCONNECTED")
+//            Toast.makeText(context, "vpn Disconnected", Toast.LENGTH_SHORT).show()
+//        } catch (e: java.lang.Exception) {
+//            e.printStackTrace()
+//        }
+//    }
     private val mRunnable: Runnable = object : Runnable {
         override fun run() {
             updateTrafficStats()
@@ -339,54 +339,54 @@ class RateScreenFragment : Fragment(){
         super.onDestroyView()
     }
 
-    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            try {
-                intent.getStringExtra("state")?.let { updateUI(it) }
-                Log.v("CHECKSTATE", intent.getStringExtra("state")!!)
-                if (isFirst) {
-                    if (getContext()?.let { activeServer.getSavedServer(it)?.getCountry1() } != null) {
-                        selectedCountry = getContext()?.let { activeServer.getSavedServer(it) }
-                        getContext()?.let {
-                            imgFlag?.let { it1 ->
-                                Glide.with(it)
-                                    .load(selectedCountry?.getFlagUrl1())
-                                    .into(it1)
-                            }
-                        }
-                        flagName?.setText(selectedCountry?.getCountry1())
-                    }
-                    isFirst = false
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            try {
-                var duration = intent.getStringExtra("duration")
-                var lastPacketReceive = intent.getStringExtra("lastPacketReceive")
-                var byteIn = intent.getStringExtra("byteIn")
-                var byteOut = intent.getStringExtra("byteOut")
-                if (duration == null) duration = "00:00:00"
-                if (lastPacketReceive == null) lastPacketReceive = "0"
-                if (byteIn == null) byteIn = " "
-                if (byteOut == null) byteOut = " "
-                updateConnectionStatus(duration, lastPacketReceive, byteIn, byteOut)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-    fun updateConnectionStatus(
-        duration: String?,
-        lastPacketReceive: String?,
-        byteIn: String,
-        byteOut: String
-    ) {
-        val byteinKb = byteIn.split("-").toTypedArray()[1]
-        val byteoutKb = byteOut.split("-").toTypedArray()[1]
-
-        textDownloading!!.text = byteinKb
-        textUploading!!.text = byteoutKb
-        timerTextView!!.text = duration
-    }
+//    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context, intent: Intent) {
+//            try {
+//                intent.getStringExtra("state")?.let { updateUI(it) }
+//                Log.v("CHECKSTATE", intent.getStringExtra("state")!!)
+//                if (isFirst) {
+//                    if (getContext()?.let { activeServer.getSavedServer(it)?.getCountry1() } != null) {
+//                        selectedCountry = getContext()?.let { activeServer.getSavedServer(it) }
+//                        getContext()?.let {
+//                            imgFlag?.let { it1 ->
+//                                Glide.with(it)
+//                                    .load(selectedCountry?.getFlagUrl1())
+//                                    .into(it1)
+//                            }
+//                        }
+//                        flagName?.setText(selectedCountry?.getCountry1())
+//                    }
+//                    isFirst = false
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//            try {
+//                var duration = intent.getStringExtra("duration")
+//                var lastPacketReceive = intent.getStringExtra("lastPacketReceive")
+//                var byteIn = intent.getStringExtra("byteIn")
+//                var byteOut = intent.getStringExtra("byteOut")
+//                if (duration == null) duration = "00:00:00"
+//                if (lastPacketReceive == null) lastPacketReceive = "0"
+//                if (byteIn == null) byteIn = " "
+//                if (byteOut == null) byteOut = " "
+//                updateConnectionStatus(duration, lastPacketReceive, byteIn, byteOut)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
+//    fun updateConnectionStatus(
+//        duration: String?,
+//        lastPacketReceive: String?,
+//        byteIn: String,
+//        byteOut: String
+//    ) {
+//        val byteinKb = byteIn.split("-").toTypedArray()[1]
+//        val byteoutKb = byteOut.split("-").toTypedArray()[1]
+//
+//        textDownloading!!.text = byteinKb
+//        textUploading!!.text = byteoutKb
+//        timerTextView!!.text = duration
+//    }
 }

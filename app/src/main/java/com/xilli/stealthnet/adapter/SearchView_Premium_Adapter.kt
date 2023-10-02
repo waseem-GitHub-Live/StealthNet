@@ -70,7 +70,7 @@ class SearchView_Premium_Adapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flagImageView: ImageView = itemView.findViewById(R.id.imageView)
         val flagNameTextView: TextView = itemView.findViewById(R.id.flag_name)
-        val vpnIpTextView: TextView = itemView.findViewById(R.id.vpn_ip)
+//        val vpnIpTextView: TextView = itemView.findViewById(R.id.vpn_ip)
         val signalImageView: ImageView = itemView.findViewById(R.id.signalgreen)
         val crownImageView: ImageView = itemView.findViewById(R.id.radio)
         val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraintLayoutpremium)

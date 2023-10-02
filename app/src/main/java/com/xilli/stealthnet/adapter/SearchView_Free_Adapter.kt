@@ -73,7 +73,7 @@ class SearchView_Free_Adapter( private val dataList: List<Countries>,private val
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flagImageView: ImageView = itemView.findViewById(R.id.imageView200)
         val flagNameTextView: TextView = itemView.findViewById(R.id.flag_name2)
-        val vpnIpTextView: TextView = itemView.findViewById(R.id.vpn_ip2)
+//        val vpnIpTextView: TextView = itemView.findViewById(R.id.vpn_ip2)
         val signalview: ImageView = itemView.findViewById(R.id.signalgreen2)
         val radioButton: RadioButton = itemView.findViewById(R.id.radio2)
         val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraintLayout400)
